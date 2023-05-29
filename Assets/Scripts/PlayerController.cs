@@ -48,6 +48,7 @@ namespace CountMasterClone
         private float moveToNewPositonDuration = 0.3f;
 
         private bool gateHit = false;
+        private bool shouldRepositions = false;
 
         public int CloneCount => stickmanContainer.transform.childCount;
 
@@ -65,6 +66,10 @@ namespace CountMasterClone
             direction.Scale(Vector3.right);
 
             transform.position += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime; 
+        }
+
+        private void OnCloneDead()
+        {
         }
 
         private void SpawnNewClones(GateController gate)
@@ -98,7 +103,10 @@ namespace CountMasterClone
 
             for (int i = 0; i < addNumber; i++)
             {
-                Instantiate(clonePrefab, stickmanContainer.transform, false);
+                GameObject clone = Instantiate(clonePrefab, stickmanContainer.transform, false);
+                DamagableController controller = clone.GetComponent<DamagableController>();
+
+                controller.Died += OnCloneDead;
             }
 
             RepositionStickmans();
@@ -197,6 +205,16 @@ namespace CountMasterClone
 
         private void Start()
         {
+            Transform containerTransform = stickmanContainer.transform;
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                DamagableController controller = containerTransform.GetChild(i).GetComponent<DamagableController>();
+                if (controller != null)
+                {
+                    controller.Died += OnCloneDead;
+                }
+            }
         }
 
         private void Update()
