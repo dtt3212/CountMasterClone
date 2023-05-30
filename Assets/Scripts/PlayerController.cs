@@ -1,14 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DG.Tweening;
-using System.Collections.Generic;
 
 namespace CountMasterClone
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : GroupController
     {
-        public const int LayerNumber = 6;
-
         [SerializeField]
         private float verticalMoveSpeedPerSec = 0.5f;
 
@@ -16,20 +12,29 @@ namespace CountMasterClone
         private float horizontalMoveSpeedPerSec = 10.0f;
 
         [SerializeField]
+        private float attackSpeed = 20.0f;
+
+        [SerializeField]
         private float cameraDistance = 10.0f;
 
         [SerializeField]
         private Camera gameCamera;
 
-        private ClonableGroupController groupController;
+        private GroupManager clonableGroupManager;
 
-        private void Awake()
+        private void Start()
         {
-            groupController = GetComponent<ClonableGroupController>();
+            clonableGroupManager = GetComponent<GroupManager>();
+            TargetChanged += OnTargetChanged;
         }
 
         private void OnMove(InputValue value)
         {
+            if (AggressiveMode)
+            {
+                return;
+            }
+
             Vector2 pos = value.Get<Vector2>();
             Vector3 realWorldPos = gameCamera.ScreenToWorldPoint(new Vector3(pos.x, pos.y, cameraDistance));
 
@@ -58,7 +63,7 @@ namespace CountMasterClone
 
                 case GateType.Multiplication:
                     {
-                        addNumber = groupController.CloneCount * (gate.Value - 1);
+                        addNumber = clonableGroupManager.CloneCount * (gate.Value - 1);
                         break;
                     }
             }
@@ -68,20 +73,43 @@ namespace CountMasterClone
                 return;
             }
 
-            groupController.Clone(addNumber);
+            clonableGroupManager.Clone(addNumber);
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTargetChanged()
         {
-            if (other.gameObject.layer == GateController.LayerNumber)
+            if (Target != null)
+            {
+                GroupManager targetGroupManager = Target.GetComponent<GroupManager>();
+                if (targetGroupManager != null)
+                {
+                    targetGroupManager.Disbanded += () =>
+                    {
+                        AggressiveMode = false;
+                        ClearTarget();
+                    };
+                }
+            }
+        }
+
+        protected override void OnTriggerEnter(Collider other)
+        {
+            base.OnTriggerEnter(other);
+
+            if (other.gameObject.layer == (int)EntityLayer.Gate)
             {
                 SpawnNewClones(other.gameObject.GetComponent<GateController>());
+            }
+            else if (other.gameObject.layer == (int)EntityLayer.EnemiesCage)
+            {
+                // The first clone enter the cage will make the group go into this aggressive mode
+                AggressiveMode = true;
             }
         }
 
         private void Update()
         {
-            transform.position += new Vector3(0, 0, verticalMoveSpeedPerSec * Time.deltaTime);
+            transform.position += (AggressiveMode ? MoveDirection * attackSpeed : new Vector3(0, 0, verticalMoveSpeedPerSec)) * Time.deltaTime;
         }
     }
 }

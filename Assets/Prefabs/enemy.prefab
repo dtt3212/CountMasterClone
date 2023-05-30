@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetEnemyLayer: 6
+  attackReason: 1
 --- !u!1001 &3502321431092486886
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -103,4 +103,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0999d44f8a0654f86f5bcba6942db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetEnemyLayer: 0
+  targetEnemyLayer: 6
+  attackReason: 0

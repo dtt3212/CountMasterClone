@@ -7,8 +7,6 @@ namespace CountMasterClone
         [SerializeField]
         private TMPro.TMP_Text valueLabel;
 
-        public const int LayerNumber = 7;
-
         private GateType gateType;
         private int rhs;
 
@@ -32,7 +30,7 @@ namespace CountMasterClone
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer == PlayerController.LayerNumber)
+            if (other.gameObject.layer == (int)EntityLayer.Player)
             {
                 // Destroy this gate, and disable other gates (because clone's collider may hit them)
                 if (belongingGroup)
