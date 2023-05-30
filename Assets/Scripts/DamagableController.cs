@@ -5,11 +5,9 @@ namespace CountMasterClone
 {
     public class DamagableController : MonoBehaviour
     {
-        public const int LayerNumber = 10;
-
         public event Action Died;
 
-        public void InstantKill()
+        public void Hit()
         {
             Destroy(gameObject);
             Died?.Invoke();

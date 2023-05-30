@@ -2,14 +2,17 @@ using UnityEngine;
 
 namespace CountMasterClone
 {
-    public class KillerSawController : MonoBehaviour
+    public class AttackableController : MonoBehaviour
     {
+        [SerializeField]
+        private int targetEnemyLayer;
+
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer == DamagableController.LayerNumber)
+            if (other.gameObject.layer == targetEnemyLayer)
             {
                 DamagableController controller = other.GetComponent<DamagableController>();
-                controller?.InstantKill();
+                controller?.Hit();
             }
         }
     }

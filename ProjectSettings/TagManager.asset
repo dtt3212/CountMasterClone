@@ -15,8 +15,8 @@ TagManager:
   - Gate
   - Enemies
   - StaticHostile
-  - Damagable
-  - 
+  - EnemiesRange
+  - EnemiesCage
   - 
   - 
   - 
