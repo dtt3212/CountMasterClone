@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace CountMasterClone
 {
-    public class PlayerController : GroupController
+    public class PlayerController : MonoBehaviour
     {
         [SerializeField]
         private float verticalMoveSpeedPerSec = 0.5f;
@@ -20,17 +20,12 @@ namespace CountMasterClone
         [SerializeField]
         private Camera gameCamera;
 
-        private GroupManager clonableGroupManager;
-
-        private void Start()
-        {
-            clonableGroupManager = GetComponent<GroupManager>();
-            TargetChanged += OnTargetChanged;
-        }
+        [SerializeField]
+        private PlayerGroupController playerGroupController;
 
         private void OnMove(InputValue value)
         {
-            if (AggressiveMode)
+            if (playerGroupController.AggressiveMode)
             {
                 return;
             }
@@ -41,75 +36,14 @@ namespace CountMasterClone
             Vector3 direction = (realWorldPos - transform.position);
             direction.Scale(Vector3.right);
 
-            transform.position += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime; 
+            transform.localPosition += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime; 
         }
-
-        private void SpawnNewClones(GateController gate)
-        {
-            if (gate == null)
-            {
-                return;
-            }
- 
-            int addNumber = 0;
-
-            switch (gate.GateType)
-            {
-                case GateType.Add:
-                    {
-                        addNumber = gate.Value;
-                        break;
-                    }
-
-                case GateType.Multiplication:
-                    {
-                        addNumber = clonableGroupManager.CloneCount * (gate.Value - 1);
-                        break;
-                    }
-            }
-
-            if (addNumber == 0)
-            {
-                return;
-            }
-
-            clonableGroupManager.Clone(addNumber);
-        }
-
-        private void OnTargetChanged()
-        {
-            if (Target != null)
-            {
-                GroupManager targetGroupManager = Target.GetComponent<GroupManager>();
-                if (targetGroupManager != null)
-                {
-                    targetGroupManager.Disbanded += () =>
-                    {
-                        AggressiveMode = false;
-                        ClearTarget();
-                    };
-                }
-            }
-        }
-
-        protected override void OnTriggerEnter(Collider other)
-        {
-            base.OnTriggerEnter(other);
-
-            if (other.gameObject.layer == (int)EntityLayer.Gate)
-            {
-                SpawnNewClones(other.gameObject.GetComponent<GateController>());
-            }
-            else if (other.gameObject.layer == (int)EntityLayer.EnemiesCage)
-            {
-                // The first clone enter the cage will make the group go into this aggressive mode
-                AggressiveMode = true;
-            }
-        }
-
         private void Update()
         {
-            transform.position += (AggressiveMode ? MoveDirection * attackSpeed : new Vector3(0, 0, verticalMoveSpeedPerSec)) * Time.deltaTime;
+            if (!playerGroupController.AggressiveMode)
+            {
+                transform.localPosition += new Vector3(0, 0, verticalMoveSpeedPerSec) * Time.deltaTime;
+            }
         }
     }
 }

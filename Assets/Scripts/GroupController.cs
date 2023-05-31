@@ -50,7 +50,7 @@ namespace CountMasterClone
             StartCoroutine(ClearTargetImpl());
         }
 
-        protected bool AggressiveMode
+        public bool AggressiveMode
         {
             get => shouldAggressiveMove;
             set

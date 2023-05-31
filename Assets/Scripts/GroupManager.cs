@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace CountMasterClone
@@ -30,6 +31,8 @@ namespace CountMasterClone
         [SerializeField]
         private bool repositionable = false;
 
+        private Transform[,] childMap;
+
         private bool groupMembersChanged = false;
 
         public int CloneCount => transform.childCount;
@@ -43,6 +46,10 @@ namespace CountMasterClone
         private void OnCloneDead(GameObject unfortunateClone, HitReason reason)
         {
             unfortunateClone.transform.DOComplete();
+            if (repositionable)
+            {
+                RepositionToReplaceFallen(unfortunateClone);
+            }
             groupMembersChanged = true;
         }
 
@@ -78,11 +85,96 @@ namespace CountMasterClone
             RepositionClones();
         }
 
+        private Vector3 RetriveMemberPosition(int x, int y)
+        {
+            int startingColumn = -(childMap.GetLength(0) / 2);
+            int zeroYRow = childMap.GetLength(1) / 2;
+
+            int columnReal = startingColumn + x;
+            int rowReal = -(y - zeroYRow);
+
+            float finalX = distanceBetweenSpawn * columnReal + (Mathf.Cos(rowReal) * unevenDistance * unevenIntensity);
+            float finalZ = distanceBetweenSpawn * rowReal + (Mathf.Sin(columnReal) * unevenDistance * unevenIntensity);
+
+            return new Vector3(finalX, 0, finalZ);
+        }
+
+        private void TweenToPosition(int gridX, int gridY)
+        {
+            childMap[gridX, gridY].DOLocalMove(RetriveMemberPosition(gridX, gridY), moveToNewPositonDuration)
+                .SetEase(Ease.Linear);
+        }
+
+        private void RepositionToFillSpace(int destX, int destY, bool skipCurrentCol = false)
+        {
+            // Find a near alternative to go in. Check what side it's by
+            int middleColumnIndex = childMap.GetLength(0) / 2;
+
+            bool rightSide = (destX > middleColumnIndex);
+
+            int y = destY;
+            int yInc = 1;
+
+            // First, look on the right side to see if anything can be taken
+            while (y > 0)
+            {
+                for (int x = skipCurrentCol ? (rightSide ? destX + 1 : destX - 1) : destX; rightSide ? (x < childMap.GetLength(0)) : (x >= 0); x += (rightSide ? 1 : -1))
+                {
+                    if (childMap[x, y] != null)
+                    {
+                        // Take first and move the previous column to its place
+                        childMap[destX, destY] = childMap[x, y];
+                        childMap[x, y] = null;
+
+                        TweenToPosition(destX, destY);
+
+                        int yAlt = y + 1;
+                        bool needFillSpace = false;
+
+                        for (yAlt = y + 1; yAlt < childMap.GetLength(1); yAlt++)
+                        {
+                            childMap[x, yAlt - 1] = childMap[x, yAlt];
+                            childMap[x, yAlt] = null;
+
+                            if (childMap[x, yAlt - 1] == null)
+                            {
+                                needFillSpace = true;
+                                break;
+                            }
+
+                            TweenToPosition(x, yAlt - 1);
+                        }
+
+                        if (needFillSpace)
+                        {
+                            RepositionToFillSpace(x, yAlt - 1, skipCurrentCol: true);
+                        }
+
+                        return;
+                    }
+                }
+
+                y += yInc;
+
+                if (y >= childMap.GetLength(1))
+                {
+                    yInc = -1;
+                    y = destY - 1;
+                }
+            }
+        }
+
+        private void RepositionToReplaceFallen(GameObject fallenSolider)
+        {
+            GroupMemberInfo fallenInfo = fallenSolider.GetComponent<GroupMemberInfo>();
+            childMap[fallenInfo.X, fallenInfo.Y] = null;
+
+            RepositionToFillSpace(fallenInfo.X, fallenInfo.Y);
+        }
+
         private void RepositionClones(bool moveNearestToTarget = false)
         {
             Transform containerTransform = transform;
-            float shrunkenDistance = (containerTransform.childCount >= 100) ? distanceBetweenSpawn / Mathf.Log(containerTransform.childCount, 110) : distanceBetweenSpawn;
-
             int avgPerCol = Mathf.FloorToInt(Mathf.Sqrt(containerTransform.childCount));
 
             List<int> colCounts = new List<int>();
@@ -91,9 +183,13 @@ namespace CountMasterClone
             int dividedByTwoCol = avgPerCol;
             int positionStartRng = 0;
 
+            int maxColumnCount = 0;
+
             while ((dividedByTwoCol >= 4) && (totalCalced < containerTransform.childCount))
             {
                 int takeThisTime = Mathf.Min(containerTransform.childCount - totalCalced, dividedByTwoCol / 2);
+                maxColumnCount = Mathf.Max(takeThisTime, maxColumnCount);
+
                 colCounts.Insert(0, takeThisTime);
 
                 totalCalced += takeThisTime;
@@ -103,6 +199,8 @@ namespace CountMasterClone
                 }
 
                 takeThisTime = Mathf.Min(containerTransform.childCount - totalCalced, dividedByTwoCol / 2);
+                maxColumnCount = Mathf.Max(takeThisTime, maxColumnCount);
+
                 colCounts.Add(takeThisTime);
 
                 totalCalced += takeThisTime;
@@ -119,6 +217,7 @@ namespace CountMasterClone
             while (totalCalced < containerTransform.childCount)
             {
                 int columnCloneCount = Mathf.Min(Random.Range(avgPerCol - 1, avgPerCol + 2), containerTransform.childCount - totalCalced);
+                maxColumnCount = Mathf.Max(columnCloneCount, maxColumnCount);
 
                 colCounts.Insert(positionStartRng++, columnCloneCount);
                 totalCalced += columnCloneCount;
@@ -127,94 +226,31 @@ namespace CountMasterClone
             int startingColumn = -(colCounts.Count / 2);
             int currentStickman = 0;
 
-            List<Transform> unsearchedTransforms = null;
-            if (moveNearestToTarget)
-            {
-                unsearchedTransforms = new();
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    unsearchedTransforms.Add(transform.GetChild(i));
-                }
-            }
+            childMap = new Transform[colCounts.Count, maxColumnCount];
 
             for (int i = 0; i < colCounts.Count; i++)
             {
                 int column = startingColumn + i;
                 int cloneColumnCount = colCounts[i];
                 int startingRow = -(cloneColumnCount / 2);
+                int startingRowInChildMap = maxColumnCount / 2 + cloneColumnCount / 2 - ((maxColumnCount % 2 == 0) ? 1 : 0);
 
                 for (int j = 0; j < cloneColumnCount; j++)
                 {
-                    float x = shrunkenDistance * column + (Mathf.Cos(startingRow + j) * unevenDistance * unevenIntensity);
-                    float z = shrunkenDistance * (startingRow + j) + (Mathf.Sin(column) * unevenDistance * unevenIntensity);
+                    float x = distanceBetweenSpawn * column + (Mathf.Cos(startingRow + j) * unevenDistance * unevenIntensity);
+                    float z = distanceBetweenSpawn * (startingRow + j) + (Mathf.Sin(column) * unevenDistance * unevenIntensity);
 
-                    Transform stickmanTransfrom = null;
+                    Transform stickmanTransfrom = containerTransform.GetChild(currentStickman++);
                     Vector3 newPos = new Vector3(x, 0, z);
 
-                    if (!moveNearestToTarget)
-                    {
-                        stickmanTransfrom = containerTransform.GetChild(currentStickman++);
-                    }
-                    else
-                    {
-                        float minDistNeg = float.MaxValue;
-                        float minDistPos = float.MaxValue;
+                    childMap[i, startingRowInChildMap - j] = stickmanTransfrom;
 
-                        int transformIndexNeg = -1;
-                        int transformIndexPos = -1;
-
-                        for (int k = 0; k < unsearchedTransforms.Count; k++)
-                        {
-                            float dist = Vector3.Distance(unsearchedTransforms[k].localPosition, newPos);
-                            bool zDirTowards = (unsearchedTransforms[k].localPosition.z < newPos.z); 
-
-                            if (zDirTowards)
-                            {
-                                if (dist < minDistPos)
-                                {
-                                    transformIndexPos = k;
-                                    minDistPos = dist;
-                                }
-                            }
-                            else
-                            {
-                                if (dist < minDistNeg)
-                                {
-                                    transformIndexNeg = k;
-                                    minDistNeg = dist;
-                                }
-                            }
-                        }
-
-                        int transformIndex = 0;
-                        if (transformIndexNeg < 0)
-                        {
-                            transformIndex = transformIndexPos;
-                        }
-                        else
-                        {
-                            if ((minDistPos < minDistNeg) || (Mathf.Abs(minDistPos - minDistNeg) <= 0.3f))
-                            {
-                                transformIndex = transformIndexPos;
-                            }
-                            else
-                            {
-                                transformIndex = transformIndexNeg;
-                            }
-                        }
-
-                        if (transformIndex < 0)
-                        {
-                            transformIndex = 0;
-                        }
-
-                        stickmanTransfrom = unsearchedTransforms[transformIndex];
-                        unsearchedTransforms.RemoveAt(transformIndex);
-                    }
+                    GroupMemberInfo childInfo = stickmanTransfrom.GetOrAddComponent<GroupMemberInfo>();
+                    childInfo.X = i;
+                    childInfo.Y = startingRowInChildMap - j;
 
                     stickmanTransfrom.DOComplete();
-                    stickmanTransfrom.DOLocalMove(newPos, moveNearestToTarget ? moveToNewPositonDuration : clonePopOffDuration)
-                        .SetEase(moveNearestToTarget ? Ease.Linear : Ease.OutBack);
+                    stickmanTransfrom.DOLocalMove(newPos, clonePopOffDuration).SetEase(Ease.OutBack);
                 }
             }
         }
@@ -227,10 +263,6 @@ namespace CountMasterClone
                 {
                     Disbanded?.Invoke();
                     OnDisbanding();
-                }
-                else if (repositionable)
-                {
-                    RepositionClones(moveNearestToTarget: true);
                 }
 
                 groupMembersChanged = false;
