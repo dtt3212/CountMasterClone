@@ -19,6 +19,9 @@ namespace CountMasterClone
         [SerializeField]
         private float timeBetweenLayerBuildup = 0.8f;
 
+        [SerializeField]
+        private int maxPerLayer = 10;
+
         private bool isBuilding = false;
 
         public void StartBuildingTower()
@@ -46,7 +49,7 @@ namespace CountMasterClone
             while (left > 0)
             {
                 int maxLayerCurrent = 1;
-                while (true)
+                while (maxLayerCurrent <= maxPerLayer)
                 {
                     if ((maxLayerCurrent + 2) * (maxLayerCurrent + 1) / 2 > left)
                     {
