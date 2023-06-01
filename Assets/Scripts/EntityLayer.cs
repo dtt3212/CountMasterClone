@@ -8,6 +8,7 @@ namespace CountMasterClone
         StaticHostile = 9,
         EnemiesRange = 10,
         EnemiesCage = 11,
-        PlayerRange = 12
+        PlayerRange = 12,
+        Finish = 13
     }
 }

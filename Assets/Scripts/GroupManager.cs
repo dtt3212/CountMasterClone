@@ -11,7 +11,7 @@ namespace CountMasterClone
         private GameObject clonePrefab;
 
         [SerializeField]
-        private float distanceBetweenSpawn = 0.7f;
+        protected float distanceBetweenSpawn = 0.7f;
 
         [SerializeField]
         private float unevenDistance = 0.2f;
@@ -31,7 +31,7 @@ namespace CountMasterClone
         [SerializeField]
         private bool repositionable = false;
 
-        private Transform[,] childMap;
+        protected Transform[,] childMap;
 
         private bool groupMembersChanged = false;
 

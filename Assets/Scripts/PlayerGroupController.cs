@@ -8,11 +8,11 @@ namespace CountMasterClone
         [SerializeField]
         private float attackSpeed = 4.0f;
 
-        private GroupManager clonableGroupManager;
+        private PlayerGroupManager clonableGroupManager;
 
         private void Start()
         {
-            clonableGroupManager = GetComponent<GroupManager>();
+            clonableGroupManager = GetComponent<PlayerGroupManager>();
             TargetChanged += OnTargetChanged;
         }
 
@@ -76,6 +76,10 @@ namespace CountMasterClone
             {
                 // The first clone enter the cage will make the group go into this aggressive mode
                 AggressiveMode = true;
+            }
+            else if (other.gameObject.layer == (int)EntityLayer.Finish)
+            {
+                clonableGroupManager.StartBuildingTower();
             }
         }
 
