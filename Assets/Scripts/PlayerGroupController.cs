@@ -68,18 +68,24 @@ namespace CountMasterClone
         {
             base.OnTriggerEnter(other);
 
-            if (other.gameObject.layer == (int)EntityLayer.Gate)
+            switch ((EntityLayer)other.gameObject.layer)
             {
-                SpawnNewClones(other.gameObject.GetComponent<GateController>());
-            }
-            else if (other.gameObject.layer == (int)EntityLayer.EnemiesCage)
-            {
-                // The first clone enter the cage will make the group go into this aggressive mode
-                AggressiveMode = true;
-            }
-            else if (other.gameObject.layer == (int)EntityLayer.Finish)
-            {
-                clonableGroupManager.StartBuildingTower();
+                case EntityLayer.Gate:
+                    SpawnNewClones(other.gameObject.GetComponent<GateController>());
+                    break;
+
+                case EntityLayer.EnemiesCage:
+                    // The first clone enter the cage will make the group go into this aggressive mode
+                    AggressiveMode = true;
+                    break;
+
+                case EntityLayer.Finish:
+                    clonableGroupManager.StartBuildingTower();
+                    break;
+
+                case EntityLayer.Stair:
+                    clonableGroupManager.StepOnStair(other.gameObject.GetComponent<MultiplierStairsDestController>());
+                    break;
             }
         }
 

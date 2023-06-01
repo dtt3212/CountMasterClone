@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using DG.Tweening;
+using System.Linq;
 
 namespace CountMasterClone
 {
@@ -11,18 +12,19 @@ namespace CountMasterClone
         private List<List<Transform>> towerLayers;
 
         [SerializeField]
-        private float cloneRepositionInTowerDuration = 0.5f;
-
-        [SerializeField]
         private float towerLayerHeight = 0.5f;
 
         [SerializeField]
-        private float timeBetweenLayerBuildup = 0.8f;
+        private float timeBuildupTower = 0.8f;
+
+        [SerializeField]
+        private float timeBetweenStairStepping = 0.3f;
 
         [SerializeField]
         private int maxPerLayer = 10;
 
         private bool isBuilding = false;
+        private bool isSteppingOnStair = false;
 
         public void StartBuildingTower()
         {
@@ -35,10 +37,46 @@ namespace CountMasterClone
             StartCoroutine(BuildTower());
         }
 
-        public IEnumerator BuildTower()
+        public void StepOnStair(MultiplierStairsDestController stepManager)
         {
-            WaitForSeconds waitBuildup = new WaitForSeconds(timeBetweenLayerBuildup);
+            if (isSteppingOnStair)
+            {
+                return;
+            }
 
+            isSteppingOnStair = true;
+            StartCoroutine(StepOnStairCoroutine(stepManager));
+        }
+
+        private IEnumerator StepOnStairCoroutine(MultiplierStairsDestController stepManager)
+        {
+            WaitForSeconds timeStepBreak = new WaitForSeconds(timeBetweenStairStepping);
+            int stairMax = Mathf.Max(stepManager.StairCount, towerLayers.Count);
+
+            float heightDecrease = 0.0f;
+
+            for (int i = 0; i < stairMax; i++)
+            {
+                int layerIndex = towerLayers.Count - i - 1;
+
+                Transform rester = stepManager.GetStairCloneRester(i);
+                transform.position = rester.position - Vector3.up * heightDecrease;
+
+                // Detach the current layer's transforms from parent
+                foreach (Transform transform in towerLayers[layerIndex])
+                {
+                    transform.SetParent(rester, true);
+                }
+
+                heightDecrease += towerLayerHeight;
+                yield return timeStepBreak;
+            }
+
+            yield break;
+        }
+
+        private IEnumerator BuildTower()
+        {
             towerLayers = new();
 
             int left = transform.childCount;
@@ -73,6 +111,11 @@ namespace CountMasterClone
 
                 left -= (maxLayerCurrent + 1) * maxLayerCurrent / 2;
             }
+
+            int layerCount = layerIndiciesCount.Sum();
+            float timePerLayer = timeBuildupTower / layerCount;
+
+            WaitForSeconds waitBuildup = new WaitForSeconds(timePerLayer);
 
             Queue<Vector2> searching = new();
             List<Vector2> closed = new();
@@ -132,7 +175,7 @@ namespace CountMasterClone
                             float x = (j - middleIndex) * distanceBetweenSpawn;
 
                             towerLayers[i][j].transform.DOComplete();
-                            towerLayers[i][j].transform.DOLocalMove(new Vector3(x, currentY, 0), cloneRepositionInTowerDuration);
+                            towerLayers[i][j].transform.DOLocalMove(new Vector3(x, currentY, 0), timePerLayer / 2);
                         }
 
                         currentY += towerLayerHeight;
