@@ -31,11 +31,18 @@ namespace CountMasterClone
         [SerializeField]
         private bool repositionable = false;
 
+        [SerializeField]
+        private BillboardLabelController memberCountLabel;
+
+        [SerializeField]
+        private Camera gameCamera;
+
         protected Transform[,] childMap;
 
         private List<Vector2> fallenSoliders = new();
 
         private bool groupMembersChanged = false;
+        private bool countLabelEnabled = true;
 
         public int CloneCount => transform.childCount;
         public event System.Action Disbanded;
@@ -73,6 +80,9 @@ namespace CountMasterClone
                     controller.Died += OnCloneDead;
                 }
             }
+
+            memberCountLabel.LookatCamera = gameCamera;
+            memberCountLabel.Text = $"{transform.childCount}";
         }
 
         public void Clone(int additionNumber)
@@ -254,6 +264,8 @@ namespace CountMasterClone
                     stickmanTransfrom.DOLocalMove(newPos, clonePopOffDuration).SetEase(Ease.OutBack);
                 }
             }
+
+            memberCountLabel.Text = $"{transform.childCount}";
         }
 
         private void Update()
@@ -262,6 +274,8 @@ namespace CountMasterClone
             {
                 if (transform.childCount == 0)
                 {
+                    CountLabelEnabled = false;
+
                     Disbanded?.Invoke();
                     OnDisbanding();
                 }
@@ -282,9 +296,39 @@ namespace CountMasterClone
                     }
 
                     fallenSoliders.Clear();
+                    memberCountLabel.Text = $"{transform.childCount}";
                 }
 
                 groupMembersChanged = false;
+            }
+        }
+
+        public void Initialize(Camera gameCamera)
+        {
+            this.gameCamera = gameCamera;
+        }
+
+        public bool CountLabelEnabled
+        {
+            get => countLabelEnabled;
+            set
+            {
+                if (countLabelEnabled != value)
+                {
+                    if (value)
+                    {
+                        memberCountLabel.gameObject.SetActive(true);
+                        memberCountLabel.transform.DOComplete();
+                    }
+                    else
+                    {
+                        memberCountLabel.transform.DOScale(Vector3.zero, 0.3f)
+                            .SetEase(Ease.OutBounce)
+                            .OnComplete(() => memberCountLabel.gameObject.SetActive(false));
+                    }
+
+                    countLabelEnabled = value;
+                }
             }
         }
     }

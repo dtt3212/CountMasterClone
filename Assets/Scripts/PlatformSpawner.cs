@@ -30,6 +30,9 @@ namespace CountMasterClone
         private GameObject stairPrefab;
 
         [SerializeField]
+        private Camera gameCamera;
+
+        [SerializeField]
         [Range(0.05f, 1.0f)]
         private float treeSpawnDensity = 0.7f;
 
@@ -98,17 +101,21 @@ namespace CountMasterClone
         {
             get
             {
-                if (level <= 30)
+                if (level <= 10)
                 {
                     return 6.0f;
                 }
+                else if (level <= 30)
+                {
+                    return 12.0f;
+                }
                 else if (level <= 50)
                 {
-                    return 10.0f;
+                    return 18.0f;
                 }
                 else
                 {
-                    return 15.0f;
+                    return 22.0f;
                 }
             }
         }
@@ -255,7 +262,7 @@ namespace CountMasterClone
                     if (isEnemy)
                     {
                         GameObject enemy = Instantiate(enemyPrefab, rootGO.transform, false);
-                        enemy.transform.position = startSpawn;
+                        enemy.transform.position = new Vector3(enemy.transform.position.x, enemy.transform.position.y + startSpawn.y, startSpawn.z);
 
                         EnemiesManager manager = enemy.GetComponentInChildren<EnemiesManager>();
 
@@ -263,17 +270,17 @@ namespace CountMasterClone
                         {
                             // Forcefully reduce, but dont make the penalty too hard
                             int finalChoice = Mathf.Min((int)((maxCloneAfterGate - averageEnemyToBePerGate * (i + 1)) * 0.7f), 99);
-                            manager.Initialize(Mathf.Max(minEnemyCount, finalChoice));
+                            manager.Initialize(gameCamera, Mathf.Max(minEnemyCount, finalChoice));
 
                             maxCloneAfterGate -= finalChoice;
                         }
                         else
                         {
                             // Doing small penalty
-                            int intentionReduce = maxCloneAfterGate * Random.Range(5, 20) / 20;
+                            int intentionReduce = maxCloneAfterGate * Random.Range(5, 13) / 20;
                             int finalChoice = Mathf.Clamp(intentionReduce, minEnemyCount, 99);
 
-                            manager.Initialize(finalChoice);
+                            manager.Initialize(gameCamera, finalChoice);
 
                             maxCloneAfterGate -= finalChoice;
                         }
@@ -318,6 +325,9 @@ namespace CountMasterClone
             // Spawn decoratives
             BasePlatformInfo platformInfo = basePlatform.GetComponent<BasePlatformInfo>();
             playerGO.transform.position = platformInfo.PlayerSpawnPoint;
+            
+            PlayerGroupManager playerGroupManager = playerGO.GetComponentInChildren<PlayerGroupManager>();
+            playerGroupManager.Initialize(gameCamera);
 
             SpawnGatesAndHostiles(platformInfo);
             SpawnDestination(platformInfo);

@@ -666,11 +666,12 @@ MonoBehaviour:
   playerGO: {fileID: 673426780}
   finishLinePrefab: {fileID: 9025796496681525357, guid: d4c911a2990113c48a3aded152f105b8, type: 3}
   stairPrefab: {fileID: 6403108303039281086, guid: 173b5a55f2c48734686009c9ce12a9e3, type: 3}
+  gameCamera: {fileID: 963194227}
   treeSpawnDensity: 0.7
   distancePerTree: 8
   spawnAreaInsideGatesPadding: 8
-  enemySpawnChance: 0.65
-  level: 1
+  enemySpawnChance: 0.6
+  level: 2
 --- !u!4 &1253589898
 Transform:
   m_ObjectHideFlags: 0

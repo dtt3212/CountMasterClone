@@ -30,8 +30,9 @@ namespace CountMasterClone
                 .OnComplete(() => base.OnDisbanding());
         }
 
-        public void Initialize(int count)
+        public void Initialize(Camera gameCamera, int count)
         {
+            Initialize(gameCamera);
             Clone(count);
         }
 
