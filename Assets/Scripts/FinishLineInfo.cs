@@ -8,5 +8,10 @@ namespace CountMasterClone
         private FinishDestinationType destinationType;
 
         public FinishDestinationType DestinationType => destinationType;
+
+        public void Initialize(FinishDestinationType type)
+        {
+            destinationType = type;
+        }
     }
 }

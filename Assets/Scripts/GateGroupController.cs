@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CountMasterClone
@@ -17,29 +19,70 @@ namespace CountMasterClone
             }
         }
 
-        private void Start()
+        public int GetMaxPossibleCloneAfterPassing(int currentCloneCount)
         {
+            int maxCount = 0;
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                GateController info = transform.GetChild(i).GetComponent<GateController>();
+                switch (info.GateType)
+                {
+                    case GateType.Add:
+                        maxCount = Mathf.Max(maxCount, currentCloneCount + info.Value);
+                        break;
+
+                    case GateType.Multiplication:
+                        maxCount = Mathf.Max(maxCount, currentCloneCount * info.Value);
+                        break;
+                }
+            }
+
+            return maxCount;
+        }
+
+        public void Initialize(int addUnitMax, int multiplierMax, bool leastOneAdd = false, int addUnitMin = -1, int mulSpawnRate = 30)
+        {
+            List<Tuple<GateType, int>> generated = new();
+
             for (int i = 0; i < transform.childCount; i++)
             {
                 GateController info = transform.GetChild(i).GetComponent<GateController>();
                 if (info != null)
                 {
-                    GateType type = (GateType)Random.Range(0, 2);
+                    GateType type;
                     int value = 0;
 
-                    switch (type)
+                    while (true)
                     {
-                        case GateType.Add:
-                            {
-                                value = Random.Range(1, 21) * 5;
-                                break;
-                            }
+                        type = ((i == 0) && leastOneAdd) ? GateType.Add : ((UnityEngine.Random.Range(0, 101) >= mulSpawnRate) ? GateType.Multiplication : GateType.Add);
 
-                        case GateType.Multiplication:
-                            {
-                                value = Random.Range(2, 6);
-                                break;
-                            }
+                        switch (type)
+                        {
+                            case GateType.Add:
+                                {
+                                    value = UnityEngine.Random.Range(addUnitMin > 0 ? addUnitMin : 1, addUnitMax + 1) * 5;
+                                    break;
+                                }
+
+                            case GateType.Multiplication:
+                                {
+                                    value = UnityEngine.Random.Range(2, multiplierMax + 1);
+                                    break;
+                                }
+                        }
+
+                        var entry = new Tuple<GateType, int>(type, value);
+
+                        if (generated.Contains(entry))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            generated.Add(entry);
+                            break;
+                        }
                     }
 
                     info.Initialize(type, value);

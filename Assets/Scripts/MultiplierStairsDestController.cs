@@ -15,9 +15,9 @@ namespace CountMasterClone
 
         private int stairCount;
 
-        private void Initialize(int stairCount)
+        public void Initialize(float maxMultiplier)
         {
-            this.stairCount = stairCount;
+            this.stairCount = (int)((maxMultiplier - 1.0f) / 0.2f + 2);
 
             Vector3 putPosition = Vector3.zero;
             Vector3 platformPosition = Vector3.zero;
@@ -42,7 +42,7 @@ namespace CountMasterClone
                 putPosition = stepManager.NextStepPoint;
                 platformPosition = stepManager.DestPlatformPoint;
 
-                currentMulitplier += 0.1f;
+                currentMulitplier += 0.2f;
             }
 
             GameObject platform = Instantiate(destinationPlatformPrefab, transform, false);
@@ -73,7 +73,6 @@ namespace CountMasterClone
 
         private void Start()
         {
-            Initialize(10);
         }
     }
 }

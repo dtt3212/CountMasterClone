@@ -42,7 +42,6 @@ namespace CountMasterClone
 
         private void Start()
         {
-            Initialize(Random.Range(10, 21));
         }
     }
 }

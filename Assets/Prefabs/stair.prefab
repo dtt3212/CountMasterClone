@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepPrefab: {fileID: 1045943848800006351, guid: 107c46b5547dfc04d91bb8d0f03f1444, type: 3}
+  destinationPlatformPrefab: {fileID: 2079381467094279787, guid: 3703982adbacb5c4bb6af39a37ecb287, type: 3}
   stairMaterials:
   - {fileID: 2100000, guid: ea0a98cc0fdeff04085d3dfb22b44683, type: 2}
   - {fileID: 2100000, guid: 55799cea6e143e348967e720b621dca1, type: 2}

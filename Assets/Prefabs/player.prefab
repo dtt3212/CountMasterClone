@@ -46,12 +46,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca5420c305601b47a08b414b8c2533e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalMoveSpeedPerSec: 5
+  verticalMoveSpeedPerSec: 8
   horizontalMoveSpeedPerSec: 10
   attackSpeed: 20
   cameraDistance: 10
   gameCamera: {fileID: 0}
   playerGroupController: {fileID: 5856185195781441369}
+  normalViewCinecam: {fileID: 0}
+  stairViewCinecam: {fileID: 0}
 --- !u!114 &5856185195217189125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,9 +183,10 @@ MonoBehaviour:
   moveToNewPositonDuration: 0.3
   clonePopOffDuration: 0.3
   repositionable: 1
-  cloneRepositionInTowerDuration: 0.03
   towerLayerHeight: 1.2
-  timeBetweenLayerBuildup: 0.07
+  timeBuildupTower: 1.2
+  timeBetweenStairStepping: 0.3
+  reassembleGroupAfterStairDuration: 1
   maxPerLayer: 10
 --- !u!1001 &8298847022945546616
 PrefabInstance:
