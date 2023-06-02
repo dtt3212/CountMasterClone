@@ -1,3 +1,4 @@
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,9 +24,20 @@ namespace CountMasterClone
         [SerializeField]
         private PlayerGroupController playerGroupController;
 
+        [SerializeField]
+        private GameObject normalViewCinecam;
+
+        [SerializeField]
+        private GameObject stairViewCinecam;
+
+        private void Awake()
+        {
+            normalViewCinecam.SetActive(true);
+        }
+
         private void OnMove(InputValue value)
         {
-            if (playerGroupController.AggressiveMode)
+            if (playerGroupController.AggressiveMode || playerGroupController.ReachedFinish)
             {
                 return;
             }
@@ -38,8 +50,21 @@ namespace CountMasterClone
 
             transform.localPosition += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime; 
         }
+
         private void Update()
         {
+            if (playerGroupController.ReachedFinish)
+            {
+                normalViewCinecam.SetActive(false);
+
+                switch (playerGroupController.FinishDestinationType)
+                {
+                    case FinishDestinationType.Staircase:
+                        stairViewCinecam.SetActive(true);
+                        break;
+                }
+            }
+
             if (!playerGroupController.AggressiveMode)
             {
                 transform.localPosition += new Vector3(0, 0, verticalMoveSpeedPerSec) * Time.deltaTime;

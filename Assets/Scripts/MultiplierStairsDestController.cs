@@ -8,6 +8,9 @@ namespace CountMasterClone
         private GameObject stepPrefab;
 
         [SerializeField]
+        private GameObject destinationPlatformPrefab;
+
+        [SerializeField]
         private Material[] stairMaterials;
 
         private int stairCount;
@@ -17,6 +20,7 @@ namespace CountMasterClone
             this.stairCount = stairCount;
 
             Vector3 putPosition = Vector3.zero;
+            Vector3 platformPosition = Vector3.zero;
             float currentMulitplier = 1.0f;
 
             for (int i = 0; i < stairCount; i++)
@@ -36,8 +40,13 @@ namespace CountMasterClone
                 stepManager.Initialize(stairMaterials[i % stairMaterials.Length], currentMulitplier);
 
                 putPosition = stepManager.NextStepPoint;
+                platformPosition = stepManager.DestPlatformPoint;
+
                 currentMulitplier += 0.1f;
             }
+
+            GameObject platform = Instantiate(destinationPlatformPrefab, transform, false);
+            platform.transform.position = platformPosition;
         }
 
         public int StairCount => stairCount;

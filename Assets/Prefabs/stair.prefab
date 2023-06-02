@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6403108303039281080}
   - component: {fileID: 6403108303039281081}
-  m_Layer: 0
+  - component: {fileID: 6403108304634571904}
+  m_Layer: 14
   m_Name: stair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,3 +52,16 @@ MonoBehaviour:
   - {fileID: 2100000, guid: eb74b841bea1e3c478edb0d6c5aa3d8d, type: 2}
   - {fileID: 2100000, guid: 7635b143c34684347a53141ed73cf66f, type: 2}
   - {fileID: 2100000, guid: b4016d19a009f5e4ba84453d8a8a3783, type: 2}
+--- !u!65 &6403108304634571904
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6403108303039281086}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 15.139964, y: 7.928707, z: 3.3011398}
+  m_Center: {x: 0.0012440681, y: 3.4643536, z: -0.052265167}

@@ -172,7 +172,7 @@ namespace CountMasterClone
             RepositionToFillSpace(fallenInfo.X, fallenInfo.Y);
         }
 
-        private void RepositionClones(bool moveNearestToTarget = false)
+        protected void RepositionClones()
         {
             Transform containerTransform = transform;
             int avgPerCol = Mathf.FloorToInt(Mathf.Sqrt(containerTransform.childCount));
@@ -241,7 +241,7 @@ namespace CountMasterClone
                     float z = distanceBetweenSpawn * (startingRow + j) + (Mathf.Sin(column) * unevenDistance * unevenIntensity);
 
                     Transform stickmanTransfrom = containerTransform.GetChild(currentStickman++);
-                    Vector3 newPos = new Vector3(x, 0, z);
+                    Vector3 newPos = new Vector3(x, 0.0f, z);
 
                     childMap[i, startingRowInChildMap - j] = stickmanTransfrom;
 

@@ -8,6 +8,9 @@ namespace CountMasterClone
         private Transform nextStepPoint;
 
         [SerializeField]
+        private Transform destPlatformPoint;
+
+        [SerializeField]
         private TMPro.TMP_Text multiplierText;
 
         [SerializeField]
@@ -26,6 +29,7 @@ namespace CountMasterClone
         }
 
         public Vector3 NextStepPoint => nextStepPoint.position;
+        public Vector3 DestPlatformPoint => destPlatformPoint.position;
         public Transform CloneRester => cloneRester;
         public float Multiplier => multiplier;
     }

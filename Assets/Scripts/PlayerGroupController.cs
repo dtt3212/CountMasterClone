@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace CountMasterClone
 {
@@ -9,6 +8,11 @@ namespace CountMasterClone
         private float attackSpeed = 4.0f;
 
         private PlayerGroupManager clonableGroupManager;
+
+        private FinishDestinationType destinationType = FinishDestinationType.None;
+
+        public bool ReachedFinish => destinationType != FinishDestinationType.None;
+        public FinishDestinationType FinishDestinationType => destinationType;
 
         private void Start()
         {
@@ -80,8 +84,16 @@ namespace CountMasterClone
                     break;
 
                 case EntityLayer.Finish:
-                    clonableGroupManager.StartBuildingTower();
-                    break;
+                    {
+                        FinishLineInfo info = other.gameObject.GetComponent<FinishLineInfo>();
+                        if (info != null)
+                        {
+                            destinationType = info.DestinationType;
+                        }
+
+                        clonableGroupManager.StartBuildingTower();
+                        break;
+                    }
 
                 case EntityLayer.Stair:
                     clonableGroupManager.StepOnStair(other.gameObject.GetComponent<MultiplierStairsDestController>());

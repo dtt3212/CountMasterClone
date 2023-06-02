@@ -21,6 +21,9 @@ namespace CountMasterClone
         private float timeBetweenStairStepping = 0.3f;
 
         [SerializeField]
+        private float reassembleGroupAfterStairDuration = 1.0f;
+
+        [SerializeField]
         private int maxPerLayer = 10;
 
         private bool isBuilding = false;
@@ -51,16 +54,14 @@ namespace CountMasterClone
         private IEnumerator StepOnStairCoroutine(MultiplierStairsDestController stepManager)
         {
             WaitForSeconds timeStepBreak = new WaitForSeconds(timeBetweenStairStepping);
-            int stairMax = Mathf.Max(stepManager.StairCount, towerLayers.Count);
-
-            float heightDecrease = 0.0f;
+            int stairMax = Mathf.Min(stepManager.StairCount, towerLayers.Count);
 
             for (int i = 0; i < stairMax; i++)
             {
                 int layerIndex = towerLayers.Count - i - 1;
 
                 Transform rester = stepManager.GetStairCloneRester(i);
-                transform.position = rester.position - Vector3.up * heightDecrease;
+                transform.position = rester.position;
 
                 // Detach the current layer's transforms from parent
                 foreach (Transform transform in towerLayers[layerIndex])
@@ -68,8 +69,32 @@ namespace CountMasterClone
                     transform.SetParent(rester, true);
                 }
 
-                heightDecrease += towerLayerHeight;
                 yield return timeStepBreak;
+
+                for (int layerDown = layerIndex - 1; layerDown >= 0; layerDown--)
+                {
+                    foreach (Transform transform in towerLayers[layerDown])
+                    {
+                        transform.localPosition -= Vector3.up * towerLayerHeight;
+                    }
+                }
+            }
+
+            if (stairMax < towerLayers.Count)
+            {
+                yield return new WaitForSeconds(reassembleGroupAfterStairDuration);
+
+                int firstLayerLeft = towerLayers.Count - stairMax - 1;
+
+                for (int i = firstLayerLeft; i >= 0; i--)
+                {
+                    foreach (Transform transform in towerLayers[i])
+                    {
+                        transform.localPosition = new Vector3(transform.localPosition.x, 0, transform.localPosition.y);
+                    }
+                }
+
+                RepositionClones();
             }
 
             yield break;
