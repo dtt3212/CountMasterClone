@@ -55,7 +55,7 @@ namespace CountMasterClone
 
                     while (true)
                     {
-                        type = ((i == 0) && leastOneAdd) ? GateType.Add : ((UnityEngine.Random.Range(0, 101) >= mulSpawnRate) ? GateType.Multiplication : GateType.Add);
+                        type = (((i == 0) && leastOneAdd) || (multiplierMax < 0)) ? GateType.Add : ((UnityEngine.Random.Range(0, 101) < mulSpawnRate) ? GateType.Multiplication : GateType.Add);
 
                         switch (type)
                         {

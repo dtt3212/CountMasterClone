@@ -162,7 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetEnemyLayer: 6
   restoreLookForwardDuration: 0.8
-  fightEncounterDistance: 3.8
+  fightEncounterDistance: 5.8
   moveSpeed: 2
 --- !u!114 &5747913694015897177
 MonoBehaviour:
@@ -184,7 +184,7 @@ MonoBehaviour:
   clonePopOffDuration: 0.3
   repositionable: 0
   cageCircle: {fileID: 5747913694925257927}
-  cageRadius: 3
+  cageRadius: 5
   destroyDuration: 0.8
 --- !u!1 &5747913694699434327
 GameObject:

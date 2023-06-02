@@ -140,6 +140,31 @@ namespace CountMasterClone
             int layerCount = layerIndiciesCount.Sum();
             float timePerLayer = timeBuildupTower / layerCount;
 
+            int ttt = 0;
+
+            for (int i = 0; i < layerIndiciesCount.Count; i++)
+            {
+                ttt += (i + 1) * layerIndiciesCount[i];
+            }
+
+            int kbc = 0;
+
+            for (int i = 0; i < childMap.GetLength(0); i++)
+            {
+                for (int j = 0; j < childMap.GetLength(1); j++)
+                {
+                    if (childMap[i, j] != null)
+                    {
+                        kbc++;
+                    }
+                }
+            }
+
+            if (ttt != kbc)
+            {
+                int askdk = 10;
+            }
+
             WaitForSeconds waitBuildup = new WaitForSeconds(timePerLayer);
 
             Queue<Vector2> searching = new();

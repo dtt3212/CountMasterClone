@@ -23,6 +23,11 @@ namespace CountMasterClone
 
         protected event Action TargetChanged;
 
+        public Vector3 GetDirectionToTargetFrom(Transform from)
+        {
+            return (Target.transform.position - from.position).normalized;
+        }
+
         protected virtual void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.layer == (int)targetEnemyLayer)

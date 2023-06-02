@@ -33,6 +33,8 @@ namespace CountMasterClone
 
         protected Transform[,] childMap;
 
+        private List<Vector2> fallenSoliders = new();
+
         private bool groupMembersChanged = false;
 
         public int CloneCount => transform.childCount;
@@ -48,7 +50,8 @@ namespace CountMasterClone
             unfortunateClone.transform.DOComplete();
             if (repositionable)
             {
-                RepositionToReplaceFallen(unfortunateClone);
+                GroupMemberInfo info = unfortunateClone.GetComponent<GroupMemberInfo>();
+                fallenSoliders.Add(new Vector2(info.X, info.Y));
             }
             groupMembersChanged = true;
         }
@@ -99,9 +102,15 @@ namespace CountMasterClone
             return new Vector3(finalX, 0, finalZ);
         }
 
-        private void TweenToPosition(int gridX, int gridY)
+        private void RelocateInfoAndTweenToPosition(int gridX, int gridY)
         {
-            childMap[gridX, gridY].DOLocalMove(RetriveMemberPosition(gridX, gridY), moveToNewPositonDuration)
+            Transform transform = childMap[gridX, gridY];
+            GroupMemberInfo info = transform.GetComponent<GroupMemberInfo>();
+
+            info.X = gridX;
+            info.Y = gridY;
+
+            transform.DOLocalMove(RetriveMemberPosition(gridX, gridY), moveToNewPositonDuration)
                 .SetEase(Ease.Linear);
         }
 
@@ -126,7 +135,7 @@ namespace CountMasterClone
                         childMap[destX, destY] = childMap[x, y];
                         childMap[x, y] = null;
 
-                        TweenToPosition(destX, destY);
+                        RelocateInfoAndTweenToPosition(destX, destY);
 
                         int yAlt = y + 1;
                         bool needFillSpace = false;
@@ -142,7 +151,7 @@ namespace CountMasterClone
                                 break;
                             }
 
-                            TweenToPosition(x, yAlt - 1);
+                            RelocateInfoAndTweenToPosition(x, yAlt - 1);
                         }
 
                         if (needFillSpace)
@@ -162,14 +171,6 @@ namespace CountMasterClone
                     y = destY - 1;
                 }
             }
-        }
-
-        private void RepositionToReplaceFallen(GameObject fallenSolider)
-        {
-            GroupMemberInfo fallenInfo = fallenSolider.GetComponent<GroupMemberInfo>();
-            childMap[fallenInfo.X, fallenInfo.Y] = null;
-
-            RepositionToFillSpace(fallenInfo.X, fallenInfo.Y);
         }
 
         protected void RepositionClones()
@@ -263,6 +264,24 @@ namespace CountMasterClone
                 {
                     Disbanded?.Invoke();
                     OnDisbanding();
+                }
+                else if (repositionable)
+                {
+                    foreach (Vector2 fallenSoliderPos in fallenSoliders)
+                    {
+                        childMap[(int)fallenSoliderPos.x, (int)fallenSoliderPos.y] = null;
+                    }
+
+                    // Start replacing
+                    foreach (Vector2 fallenSoliderPos in fallenSoliders)
+                    {
+                        if (childMap[(int)fallenSoliderPos.x, (int)fallenSoliderPos.y] == null)
+                        {
+                            RepositionToFillSpace((int)fallenSoliderPos.x, (int)fallenSoliderPos.y);
+                        }
+                    }
+
+                    fallenSoliders.Clear();
                 }
 
                 groupMembersChanged = false;

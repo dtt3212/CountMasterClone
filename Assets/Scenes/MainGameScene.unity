@@ -670,6 +670,7 @@ MonoBehaviour:
   distancePerTree: 8
   spawnAreaInsideGatesPadding: 8
   enemySpawnChance: 0.65
+  level: 1
 --- !u!4 &1253589898
 Transform:
   m_ObjectHideFlags: 0

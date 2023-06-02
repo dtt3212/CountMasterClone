@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3776223441820150193, guid: 3448961f7a79ba949a4eb364410830e6, type: 3}
       propertyPath: m_Name
-      value: killer_saw
+      value: killer_saw_platform_rt
       objectReference: {fileID: 0}
     - target: {fileID: 4552021681647989515, guid: 3448961f7a79ba949a4eb364410830e6, type: 3}
       propertyPath: m_RootOrder
@@ -17,7 +17,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4552021681647989515, guid: 3448961f7a79ba949a4eb364410830e6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.4
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 4552021681647989515, guid: 3448961f7a79ba949a4eb364410830e6, type: 3}
       propertyPath: m_LocalPosition.y

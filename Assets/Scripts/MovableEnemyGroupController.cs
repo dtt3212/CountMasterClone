@@ -62,9 +62,10 @@ namespace CountMasterClone
                 for (int i = 0; i < transform.childCount; i++)
                 {
                     Transform childTransform = transform.GetChild(i);
+                    Vector3 dir = GetDirectionToTargetFrom(childTransform);
 
-                    childTransform.localPosition = new Vector3(Mathf.Clamp(childTransform.localPosition.x + MoveDirection.x * moveSpeed * Time.deltaTime * 3.0f, -cageRadius + 0.1f, cageRadius - 0.1f),
-                        0.0f, Mathf.Clamp(childTransform.localPosition.z + MoveDirection.z * moveSpeed * Time.deltaTime * 3.0f, -cageRadius + 0.1f, cageRadius - 0.1f));
+                    childTransform.localPosition = new Vector3(Mathf.Clamp(childTransform.localPosition.x + dir.x * moveSpeed * Time.deltaTime * 3.0f, -cageRadius + 0.1f, cageRadius - 0.1f),
+                        0.0f, Mathf.Clamp(childTransform.localPosition.z + dir.z * moveSpeed * Time.deltaTime * 3.0f, -cageRadius + 0.1f, cageRadius - 0.1f));
                 }
             }
         }

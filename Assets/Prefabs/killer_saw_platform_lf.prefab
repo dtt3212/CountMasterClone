@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6224131824568508815, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_Name
-      value: killer_saw
+      value: killer_saw_platform_lf
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_RootOrder
@@ -17,19 +17,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6.5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_LocalScale.y
-      value: 6.5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_LocalScale.z
-      value: 6.5
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.4
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_LocalPosition.y
@@ -69,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6713563326349867829, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ddfa419f6c7d7314db321ccb1160d032, type: 3}

@@ -43,14 +43,20 @@ namespace CountMasterClone
         [Range(0.0f, 1.0f)]
         private float enemySpawnChance = 0.65f;
 
-        private int level = 30;
+        [SerializeField]
+        private int level = 1;
+
         private GameObject rootGO;
 
         private int TargetMaxClone
         {
             get
             {
-                if (level <= 30)
+                if (level <= 10)
+                {
+                    return 140;
+                }
+                else if (level <= 30)
                 {
                     return 220;
                 }
@@ -69,6 +75,10 @@ namespace CountMasterClone
         {
             get
             {
+                if (level <= 10)
+                {
+                    return 4.0f;
+                }
                 if (level <= 30)
                 {
                     return 5.0f;
@@ -94,11 +104,11 @@ namespace CountMasterClone
                 }
                 else if (level <= 50)
                 {
-                    return 7.0f;
+                    return 10.0f;
                 }
                 else
                 {
-                    return 8.0f;
+                    return 15.0f;
                 }
             }
         }
@@ -145,9 +155,9 @@ namespace CountMasterClone
             {
                 totalGates = 3;
                 maxMultiplier = 3;
-                maxAddUnit = 18;
+                maxAddUnit = 15;
                 firstTimeMinAddUnit = 3;
-                mulSpawnRate = 45;
+                mulSpawnRate = 25;
                 hostileOrEnemiesMaxBetweenGates = 1;
                 minEnemyCount = 5;
             }
@@ -157,7 +167,7 @@ namespace CountMasterClone
                 maxMultiplier = 4;
                 maxAddUnit = 20;
                 firstTimeMinAddUnit = 4;
-                mulSpawnRate = 40;
+                mulSpawnRate = 30;
                 hostileOrEnemiesMaxBetweenGates = 2;
                 minEnemyCount = 10;
             }
@@ -175,9 +185,9 @@ namespace CountMasterClone
             {
                 totalGates = 6;
                 maxMultiplier = 6;
-                maxAddUnit = 35;
+                maxAddUnit = 30;
                 firstTimeMinAddUnit = 6;
-                mulSpawnRate = 35;
+                mulSpawnRate = 40;
                 hostileOrEnemiesMaxBetweenGates = 4;
                 minEnemyCount = 20;
             }
@@ -185,46 +195,63 @@ namespace CountMasterClone
             float distVertical = info.EndSpawn.z - info.StartSpawn.z;
             float averageBetweenGates = distVertical / (totalGates + 1);
 
-            List<Vector3> gates = new();
             Vector3 startPositionGate = info.StartSpawn;
-
-            List<GateGroupController> gatesObj = new();
 
             GameObject gateHolder = new GameObject();
             gateHolder.transform.parent = rootGO.transform;
             gateHolder.name = "Gates";
 
             int averageEnemyToBePerGate = TargetMaxClone / totalGates;
-
-            for (int i = 0; i < totalGates; i++)
-            {
-                GameObject gate = Instantiate(doubleGatePrefab, gateHolder.transform, false);
-                startPositionGate += Vector3.forward * (averageBetweenGates - Random.Range(-2.0f, 2.0f));
-                gate.transform.position = new Vector3(startPositionGate.x, gate.transform.position.y, startPositionGate.z);
-
-                GateGroupController groupController = gate.GetComponent<GateGroupController>();
-                groupController.Initialize(maxAddUnit, maxMultiplier, (i == 0), (i == 0) ? firstTimeMinAddUnit : -1, mulSpawnRate);
-
-                gates.Add(startPositionGate);
-                gatesObj.Add(groupController);
-            }
-
             int minPreviousCount = 1;
 
             for (int i = 0; i < totalGates; i++)
             {
-                Vector3 startSpawn = gates[i] + Vector3.forward * spawnAreaInsideGatesPadding;
-                Vector3 endSpawn = ((i == totalGates - 1) ? info.EndSpawn : gates[i + 1]) - Vector3.forward * spawnAreaInsideGatesPadding;
+                GameObject gate = Instantiate(doubleGatePrefab, gateHolder.transform, false);
+                startPositionGate += Vector3.forward * (averageBetweenGates - Random.Range(-1.0f, 1.0f));
+                gate.transform.position = new Vector3(startPositionGate.x, gate.transform.position.y, startPositionGate.z);
+
+                GateGroupController groupController = gate.GetComponent<GateGroupController>();
+
+                int currentMaxAddUnit = maxAddUnit;
+                int currentMaxMul = maxMultiplier;
+                int currentMulSpawnRate = mulSpawnRate;
+
+                if (i != 0)
+                {
+                    if (minPreviousCount > averageEnemyToBePerGate * (i + 1))
+                    {
+                        currentMaxAddUnit = Random.Range(1, 4);
+                        currentMaxMul = 2;
+                        currentMulSpawnRate = mulSpawnRate / 4;
+                    }
+                    else
+                    {
+                        currentMaxAddUnit = Mathf.Clamp((averageEnemyToBePerGate * (i + 1) - (minPreviousCount * 11 / 10) + 4) / 5, 1, maxAddUnit);
+                        currentMaxMul = Mathf.Min(Mathf.RoundToInt(averageEnemyToBePerGate * (i + 1) / (minPreviousCount * 11 / 10)), maxMultiplier);
+
+                        if (currentMaxMul <= 1)
+                        {
+                            currentMaxMul = -1;
+                        }
+                    }
+                }
+
+                groupController.Initialize(currentMaxAddUnit, currentMaxMul, (i == 0), (i == 0) ? firstTimeMinAddUnit : -1, currentMulSpawnRate);
+
+                // Spawn object right away
+                Vector3 startSpawn = startPositionGate + Vector3.forward * spawnAreaInsideGatesPadding;
+                Vector3 endSpawn = ((i == totalGates - 1) ? info.EndSpawn : startPositionGate + Vector3.forward * averageBetweenGates) - Vector3.forward * spawnAreaInsideGatesPadding;
 
                 int spawnHostileCount = Random.Range(1, hostileOrEnemiesMaxBetweenGates + 1);
                 float distanceZBetweenHostiles = (endSpawn.z - startSpawn.z) / (spawnHostileCount + 1);
 
-                int maxCloneAfterGate = gatesObj[i].GetMaxPossibleCloneAfterPassing(minPreviousCount);
+                int maxCloneAfterGate = groupController.GetMaxPossibleCloneAfterPassing(minPreviousCount);
 
                 for (int j = 0; j < spawnHostileCount; j++)
                 {
-                    bool isEnemy = (Random.Range(0, 101) >= (enemySpawnChance * 100)) ? true : false;
-                    
+                    bool isEnemy = (Random.Range(0, 101) < (enemySpawnChance * 100)) ? true : false;
+                    startSpawn += Vector3.forward * distanceZBetweenHostiles;
+
                     if (isEnemy)
                     {
                         GameObject enemy = Instantiate(enemyPrefab, rootGO.transform, false);
@@ -232,10 +259,10 @@ namespace CountMasterClone
 
                         EnemiesManager manager = enemy.GetComponentInChildren<EnemiesManager>();
 
-                        if (maxCloneAfterGate > averageEnemyToBePerGate)
+                        if (maxCloneAfterGate > averageEnemyToBePerGate * (i + 1))
                         {
                             // Forcefully reduce, but dont make the penalty too hard
-                            int finalChoice = Mathf.Min((int)((maxCloneAfterGate - averageEnemyToBePerGate) * 0.7f), 99);
+                            int finalChoice = Mathf.Min((int)((maxCloneAfterGate - averageEnemyToBePerGate * (i + 1)) * 0.7f), 99);
                             manager.Initialize(Mathf.Max(minEnemyCount, finalChoice));
 
                             maxCloneAfterGate -= finalChoice;
@@ -243,8 +270,8 @@ namespace CountMasterClone
                         else
                         {
                             // Doing small penalty
-                            int intentionReduce = maxCloneAfterGate * Random.Range(1, 20) / 20;
-                            int finalChoice = Random.Range(Mathf.Min(minEnemyCount, intentionReduce), Mathf.Max(intentionReduce, minEnemyCount));
+                            int intentionReduce = maxCloneAfterGate * Random.Range(5, 20) / 20;
+                            int finalChoice = Mathf.Clamp(intentionReduce, minEnemyCount, 99);
 
                             manager.Initialize(finalChoice);
 
@@ -253,16 +280,14 @@ namespace CountMasterClone
                     }
                     else
                     {
-                        GameObject hostile = Instantiate(staticHostilePrefabs[Random.Range(0, staticHostilePrefabs.Length)], rootGO.transform, false);
+                        GameObject hostile = Instantiate(staticHostilePrefabs[Random.Range(0, staticHostilePrefabs.Length)], rootGO.transform, true);
                         hostile.transform.position = new Vector3(hostile.transform.position.x, hostile.transform.position.y + startSpawn.y, startSpawn.z);
 
-                        maxCloneAfterGate -= 10;
+                        maxCloneAfterGate -= 20;
                     }
-
-                    startSpawn += Vector3.forward * distanceZBetweenHostiles;
                 }
 
-                minPreviousCount = Mathf.Max(0, maxCloneAfterGate);
+                minPreviousCount = Mathf.Max(1, maxCloneAfterGate);
             }
         }
 
