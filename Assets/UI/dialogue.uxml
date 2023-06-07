@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Stylesheets/dialogue.uss?fileID=7433441132597879392&amp;guid=ac717de9a8f4ac441bf996c3c3f491c4&amp;type=3#dialogue" />
+    <ui:VisualElement name="ve_dialogue" class="dialogue" style="width: 80%; height: auto; padding-left: 5%; padding-right: 5%; padding-top: 5%; padding-bottom: 5%; -unity-text-align: middle-center; white-space: normal; justify-content: center;">
+        <ui:Label text="Sample text" display-tooltip-when-elided="true" name="lb_message" style="flex-shrink: 4; flex-grow: 4; white-space: normal; margin-top: 100px; margin-bottom: 100px;" />
+        <ui:Button text="OK" display-tooltip-when-elided="true" name="action_confirm" />
+    </ui:VisualElement>
+</ui:UXML>

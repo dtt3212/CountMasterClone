@@ -65,6 +65,7 @@ namespace CountMasterClone
 
         private void Awake()
         {
+            countLabelEnabled = memberCountLabel.gameObject.activeSelf;
             DOTween.Init();
         }
 

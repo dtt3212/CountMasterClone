@@ -14,9 +14,14 @@ namespace CountMasterClone
         public bool ReachedFinish => destinationType != FinishDestinationType.None;
         public FinishDestinationType FinishDestinationType => destinationType;
 
-        private void Start()
+        private void Awake()
         {
             clonableGroupManager = GetComponent<PlayerGroupManager>();
+            clonableGroupManager.CountLabelEnabled = false;
+        }
+
+        private void Start()
+        {
             TargetChanged += OnTargetChanged;
         }
 
@@ -107,6 +112,11 @@ namespace CountMasterClone
             {
                 transform.localPosition += MoveDirection * attackSpeed * Time.deltaTime;
             }
+        }
+
+        public void Kickup()
+        {
+            clonableGroupManager.CountLabelEnabled = true;
         }
     }
 }

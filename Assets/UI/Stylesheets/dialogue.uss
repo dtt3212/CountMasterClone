@@ -1,0 +1,16 @@
+.unity-button {
+    border-radius: 25px;
+}
+
+.dialogue {
+    background-color: rgba(120, 120, 120, 0.95);
+    border-radius: 30px;
+    margin: auto;
+
+    width: 80%;
+    height: 60%;
+}
+
+.unity-label, .unity-button {
+    font-size: 40px;
+}

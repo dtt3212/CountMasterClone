@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Stylesheets/menu.uss?fileID=7433441132597879392&amp;guid=99d9350092dcb164bbbd67b4b8ffdfb4&amp;type=3#menu" />
+    <ui:VisualElement name="ve_root" style="flex-grow: 1; background-color: rgba(84, 77, 77, 0.6);">
+        <ui:Label text="COUNT MASTER CLONE" display-tooltip-when-elided="true" name="lb_game_name" style="font-size: 128px; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/Fonts/MotleyForcesRegular-w1rZ3.ttf?fileID=12800000&amp;guid=5367c8c63ee2d7549bbd3c98577ea365&amp;type=3#MotleyForcesRegular-w1rZ3&apos;); -unity-text-outline-color: rgb(0, 0, 0); color: rgb(0, 0, 0); justify-content: flex-start; align-items: center; -unity-text-align: middle-center; -unity-font-style: bold; background-color: rgba(0, 0, 0, 0); white-space: normal; flex-shrink: 2; flex-grow: 2;" />
+        <ui:Label text="Touch/click to start" display-tooltip-when-elided="true" name="lb_instruction_short" style="flex-shrink: 1; flex-grow: 1; font-size: 60px; -unity-font: url(&apos;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&apos;); justify-content: center; align-items: center; -unity-text-align: lower-center; -unity-font-style: bold; color: rgb(27, 27, 27);" />
+        <ui:VisualElement name="ve_buttons" style="flex-shrink: 1; flex-grow: 1; padding-left: 5%; padding-right: 5%; margin-left: 0; margin-right: 0; padding-top: 5%; padding-bottom: 5%; justify-content: flex-start; flex-direction: row; align-items: flex-end; flex-wrap: nowrap;">
+            <ui:VisualElement name="action_store_container" style="flex-direction: row; flex-grow: 1; flex-wrap: nowrap; max-height: 100%; height: 100%; align-items: flex-end;">
+                <ui:Button text="Button" display-tooltip-when-elided="true" name="action_store" class="menu-button" style="flex-shrink: 1;">
+                    <ui:VisualElement name="ic_store" class="menu-button-icon-store menu-button-icon" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="action_help_container" style="flex-grow: 1; flex-direction: row; max-height: 100%; height: 100%; align-items: flex-end; justify-content: flex-end;">
+                <ui:Button text="Button" display-tooltip-when-elided="true" name="action_help" class="menu-button" style="align-items: auto; justify-content: center;">
+                    <ui:VisualElement name="ic_help" class="menu-button-icon-help menu-button-icon" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

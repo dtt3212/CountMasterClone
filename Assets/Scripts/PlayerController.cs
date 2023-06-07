@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,13 +31,26 @@ namespace CountMasterClone
         [SerializeField]
         private GameObject stairViewCinecam;
 
+        private bool kickedUp = false;
+
         private void Awake()
         {
             normalViewCinecam.SetActive(true);
         }
 
+        public void Kickup()
+        {
+            kickedUp = true;
+            playerGroupController.Kickup();
+        }
+
         private void OnMove(InputValue value)
         {
+            if (!kickedUp)
+            {
+                return;
+            }
+
             if (playerGroupController.AggressiveMode || playerGroupController.ReachedFinish)
             {
                 return;
@@ -53,6 +67,11 @@ namespace CountMasterClone
 
         private void Update()
         {
+            if (!kickedUp)
+            {
+                return;
+            }
+
             if (playerGroupController.ReachedFinish)
             {
                 normalViewCinecam.SetActive(false);
