@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7321764dfb1d44ea5586ef4b75022f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deadPopParticle: {fileID: 8752287802130014923, guid: 6256fb7e6ab27d74bb60040ce9d41ea5, type: 3}
 --- !u!114 &2442744690440369964
 MonoBehaviour:
   m_ObjectHideFlags: 0
