@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="action_store_container" style="flex-direction: row; flex-grow: 1; flex-wrap: nowrap; max-height: 100%; height: 100%; align-items: flex-end;">
+        <ui:Button text="Button" display-tooltip-when-elided="true" name="action_store" class="menu-button" style="flex-shrink: 1;">
+            <ui:VisualElement name="ic_store" class="menu-button-icon-store menu-button-icon" />
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

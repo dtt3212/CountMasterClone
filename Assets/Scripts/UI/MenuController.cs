@@ -1,6 +1,8 @@
 using DG.Tweening;
 using Radrat.Tweening;
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 namespace CountMasterClone
@@ -9,6 +11,9 @@ namespace CountMasterClone
     {
         [SerializeField]
         private GameObject helpDialoguePrefab;
+
+        [SerializeField]
+        private ShopController shopController;
 
         [SerializeField]
         private UIDocument document;
@@ -25,8 +30,11 @@ namespace CountMasterClone
         [SerializeField]
         private PlayerController playerController;
 
+        private VisualElement realRoot;
+
         private void Awake()
         {
+            EventSystem.SetUITookitEventSystemOverride(null, false, false);
             DOTween.Init();
         }
 
@@ -37,6 +45,9 @@ namespace CountMasterClone
             Button helpBtn = root.Q<Button>("action_help");
             helpBtn.clicked += OnHelpPressed;
 
+            Button shopBtn = root.Q<Button>("action_store");
+            shopBtn.clicked += OnShopPressed;
+
             Label instructionLb = root.Q<Label>("lb_instruction_short");
 
             DOTween.Sequence()
@@ -45,21 +56,39 @@ namespace CountMasterClone
                 .OnComplete(() => instructionLb.style.opacity = 0.0f)
                 .SetLoops(-1);
 
-            VisualElement realRoot = root.Q<VisualElement>("ve_root");
+            realRoot = root.Q<VisualElement>("ve_root");
             realRoot.RegisterCallback<PointerUpEvent>(x =>
             {
-                realRoot.style.DOOpacity(0.0f, uiFadeDuration)
-                    .OnComplete(() =>
-                    {
-                        realRoot.style.display = DisplayStyle.None;
-                        playerController.Kickup();
-                    });
+                Hide(() => playerController.Kickup());
             });
+
+            shopController.Closed += Show;
+        }
+
+        private void Hide(Action onHideDone)
+        {
+            realRoot.style.DOOpacity(0.0f, uiFadeDuration)
+                .OnComplete(() =>
+                {
+                    realRoot.style.display = DisplayStyle.None;
+                    onHideDone?.Invoke();
+                });
+        }
+
+        private void Show()
+        {
+            realRoot.style.display = DisplayStyle.Flex;
+            realRoot.style.DOOpacity(1.0f, uiFadeDuration);
         }
 
         private void OnHelpPressed()
         {
             Instantiate(helpDialoguePrefab, null, false);
+        }
+
+        private void OnShopPressed()
+        {
+            Hide(() => shopController.Show());
         }
     }
 }

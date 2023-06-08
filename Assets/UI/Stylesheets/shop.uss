@@ -1,0 +1,21 @@
+.menu-button-icon-back {
+    background-image: url("/Assets/UI/Images/ic_arrow_left.svg")
+}
+
+.money-bar {
+    height: 20%;
+}
+
+.money-bar-value {
+    border-radius: 1%;
+    border-color: rgb(0, 0, 0);
+    border-width: 5px;
+    background-color: rgb(255, 255, 255)
+}
+
+.money-bar-icon {
+    width: 30%;
+    height: 140%;
+
+    background-image: url("/Assets/UI/Images/ic_money.svg")
+}

@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Stylesheets/menu_button.uss?fileID=7433441132597879392&amp;guid=e51029130139c2540b245e91386728d0&amp;type=3#menu_button" />
+    <Style src="project://database/Assets/UI/Stylesheets/shop.uss?fileID=7433441132597879392&amp;guid=d66c7b8aa504614428551658abc3d874&amp;type=3#shop" />
+    <ui:VisualElement name="ve_root" style="flex-grow: 1; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; background-color: rgba(65, 65, 65, 0.86); padding-left: 5%; padding-right: 5%; padding-top: 5%; padding-bottom: 5%;">
+        <ui:VisualElement name="ve_upbar" style="flex-grow: 1; flex-direction: row; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
+            <ui:VisualElement name="ve_back_button_container" style="flex-grow: 1;">
+                <ui:Button text="Button" display-tooltip-when-elided="true" name="action_back" class="menu-button">
+                    <ui:VisualElement name="ic_back" class="menu-button-icon menu-button-icon-back" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="ve_money_bar" class="money-bar" style="flex-direction: row; align-items: center; justify-content: space-around; flex-grow: 1; margin-top: 4%; -unity-text-align: upper-left;">
+                <ui:VisualElement name="ic_money" class="money-bar-icon" style="flex-shrink: 0;" />
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="lb_money_value" class="money-bar-value" style="flex-shrink: 1; flex-grow: 1; justify-content: center; align-items: center; -unity-text-align: middle-right; font-size: 36px; padding-right: 2%; padding-left: 0; margin-left: -5px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="ve_preview" style="flex-grow: 12; flex-shrink: 12;">
+            <ui:Image name="ve_preview_image" style="flex-shrink: 11; flex-grow: 11;" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" style="justify-content: center; align-items: center; -unity-text-align: middle-center;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="ve_buttons">
+            <ui:Button text="Button" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
