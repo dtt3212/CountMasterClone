@@ -36,6 +36,15 @@ namespace CountMasterClone
         [SerializeField]
         private float notBuyableAnimationDuration = 0.3f;
 
+        [SerializeField]
+        private AudioSource audioSource;
+
+        [SerializeField]
+        private AudioClip buyClip;
+
+        [SerializeField]
+        private AudioClip notBuyableClip;
+
         private VisualElement root;
         private Label moneyLabel;
         private Button purchaseBtn;
@@ -100,6 +109,11 @@ namespace CountMasterClone
 
                 if (valuableState.Purchase(cost))
                 {
+                    if (!audioSource.isPlaying)
+                    {
+                        audioSource.PlayOneShot(buyClip);
+                    }
+
                     valuableState.ownedStickmans.Add(active);
                     valuableState.Save();
 
@@ -112,6 +126,10 @@ namespace CountMasterClone
                 }
                 else
                 {
+                    if (!audioSource.isPlaying)
+                    {
+                        audioSource.PlayOneShot(notBuyableClip);
+                    }
                     purchaseBtn.transform.DOShakePosition(notBuyableAnimationDuration, 20, 10, 90);
                 }
             }

@@ -16,6 +16,21 @@ namespace CountMasterClone
         [SerializeField]
         private ValuableState valuableState;
 
+        [SerializeField]
+        private AudioSource hitAudioSource;
+
+        [SerializeField]
+        private AudioSource popAudioSource;
+
+        [SerializeField]
+        private AudioSource cashInAudioSource;
+
+        [SerializeField]
+        private AudioSource oneShotAudioSource;
+
+        [SerializeField]
+        private AudioClip deadByHostileSFX;
+
         private PlayerGroupManager clonableGroupManager;
 
         private FinishDestinationType destinationType = FinishDestinationType.None;
@@ -27,8 +42,10 @@ namespace CountMasterClone
 
         private bool stairing = false;
         private bool treasuring = false;
+        private bool towering = false;
         private bool endGamed = false;
         private bool losing = false;
+        private int deathPlayingCount = 0;
 
         private int coinCollected;
 
@@ -40,6 +57,7 @@ namespace CountMasterClone
             treasuring = false;
             endGamed = false;
             losing = false;
+            towering = false;
 
             clonableGroupManager.MassacreAndReset();
         }
@@ -58,6 +76,8 @@ namespace CountMasterClone
 
             if (!losing && coinCollected != 0)
             {
+                cashInAudioSource.Play();
+                
                 GameObject notification = Instantiate(notificationPrefab, transform.position + new Vector3(0, 8, 5), Quaternion.identity);
                 EarnedNotificationController notificationController = notification.GetComponent<EarnedNotificationController>();
 
@@ -88,14 +108,32 @@ namespace CountMasterClone
 
             clonableGroupManager.Disbanded += () =>
             {
+                hitAudioSource.Stop();
                 losing = true;
                 ReachedEndgame = true;
+                deathPlayingCount = 0;
             };
 
             valuableState.activeStickman.Subscribe(newActive =>
             {
                 clonableGroupManager.MassacreAndReset();
             });
+
+            clonableGroupManager.Attacking += () =>
+            {
+                if (!hitAudioSource.isPlaying)
+                {
+                    hitAudioSource.Play();
+                }
+            };
+
+            clonableGroupManager.MeetStaticHostile += () =>
+            {
+                if (deathPlayingCount++ < 5)
+                {
+                    oneShotAudioSource.PlayOneShot(deadByHostileSFX);
+                }
+            };
         }
 
         private void Start()
@@ -133,6 +171,7 @@ namespace CountMasterClone
             }
 
             clonableGroupManager.Clone(addNumber);
+            popAudioSource.Play();
         }
 
         private void OnTargetChanged()
@@ -145,6 +184,9 @@ namespace CountMasterClone
                     targetGroupManager.Disbanded += () =>
                     {
                         AggressiveMode = false;
+                        deathPlayingCount = 0;
+                        hitAudioSource.Stop();
+
                         ClearTarget();
                     };
                 }
@@ -172,13 +214,20 @@ namespace CountMasterClone
 
                 case EntityLayer.Finish:
                     {
-                        FinishLineInfo info = other.gameObject.GetComponent<FinishLineInfo>();
-                        if (info != null)
+                        if (!towering)
                         {
-                            destinationType = info.DestinationType;
-                        }
+                            towering = true;
 
-                        clonableGroupManager.StartBuildingTower();
+                            FinishLineInfo info = other.gameObject.GetComponent<FinishLineInfo>();
+                            if (info != null)
+                            {
+                                destinationType = info.DestinationType;
+                            }
+
+                            hitAudioSource.Play();
+                            await clonableGroupManager.BuildTower();
+                            hitAudioSource.Stop();
+                        }
                         break;
                     }
 
@@ -186,6 +235,7 @@ namespace CountMasterClone
                     if (!stairing)
                     {
                         stairing = true;
+                        
                         
                         System.Tuple<float, bool> coinMultiplierAndKeepGoing = await clonableGroupManager.StepOnStair(other.gameObject.GetComponent<MultiplierStairsDestController>());
                         float coinBase = other.GetComponent<ObjectCoinValue>().value;

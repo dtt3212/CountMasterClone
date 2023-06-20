@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,11 +28,25 @@ namespace CountMasterClone
         [SerializeField]
         private int maxPerLayer = 10;
 
-        private bool isBuilding = false;
+        public event System.Action Attacking;
+        public event System.Action MeetStaticHostile;
+
+        protected override void OnCloneDead(GameObject unfortunateClone, HitReason reason)
+        {
+            base.OnCloneDead(unfortunateClone, reason);
+
+            if (reason == HitReason.BeingAHostile)
+            {
+                MeetStaticHostile?.Invoke();
+            }
+            else
+            {
+                Attacking?.Invoke();
+            }
+        }
 
         public void MassacreAndReset()
         {
-            isBuilding = false;
             CountLabelEnabled = false;
 
             foreach (Transform child in transform)
@@ -44,16 +57,6 @@ namespace CountMasterClone
             base.Clone(1, true);
         }
 
-        public void StartBuildingTower()
-        {
-            if (isBuilding)
-            {
-                return;
-            }
-
-            isBuilding = true;
-            StartCoroutine(BuildTower());
-        }
 
         public async UniTask<Tuple<float, bool>> StepOnStair(MultiplierStairsDestController stepManager)
         {
@@ -106,7 +109,7 @@ namespace CountMasterClone
             return new Tuple<float, bool>(stepManager.GetStairMultiplier(stairMax - 1), stillGoing);
         }
 
-        private IEnumerator BuildTower()
+        public async UniTask BuildTower()
         {
             CountLabelEnabled = false;
             towerLayers = new();
@@ -146,8 +149,6 @@ namespace CountMasterClone
 
             int layerCount = layerIndiciesCount.Sum();
             float timePerLayer = timeBuildupTower / layerCount;
-
-            WaitForSeconds waitBuildup = new WaitForSeconds(timePerLayer);
 
             Queue<Vector2> searching = new();
             List<Vector2> closed = new();
@@ -213,7 +214,7 @@ namespace CountMasterClone
                         currentY += towerLayerHeight;
                     }
 
-                    yield return waitBuildup;
+                    await UniTask.Delay((int)(timePerLayer * 1000));
                 }
             }
         }

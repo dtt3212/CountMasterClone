@@ -52,7 +52,7 @@ namespace CountMasterClone
         {
         }
 
-        private void OnCloneDead(GameObject unfortunateClone, HitReason reason)
+        protected virtual void OnCloneDead(GameObject unfortunateClone, HitReason reason)
         {
             unfortunateClone.transform.DOComplete();
             if (repositionable)
