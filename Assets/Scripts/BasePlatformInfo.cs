@@ -28,6 +28,12 @@ namespace CountMasterClone
         [SerializeField]
         private Transform destPlatformPoint;
 
+        [SerializeField]
+        private Transform leftPoint;
+
+        [SerializeField]
+        private Transform rightPoint;
+
         public Vector3 StartSpawn => startSpawn.position;
         public Vector3 EndSpawn => endSpawn.position;
 
@@ -39,5 +45,8 @@ namespace CountMasterClone
 
         public Vector3 PlayerSpawnPoint => playerSpawnPoint.position;
         public Vector3 DestPlatformPoint => destPlatformPoint.position;
+
+        public Vector3 LeftPoint => leftPoint.position;
+        public Vector3 RightPoint => rightPoint.position;
     }
 }

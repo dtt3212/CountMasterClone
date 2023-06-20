@@ -26,10 +26,15 @@ namespace CountMasterClone
         private PlayerGroupController playerGroupController;
 
         [SerializeField]
+        private PlayerGroupManager playerGroupManager;
+
+        [SerializeField]
         private GameObject normalViewCinecam;
 
         [SerializeField]
         private GameObject stairViewCinecam;
+
+        public float PlatformWidth { get; set; }
 
         public event System.Action<bool> GameEnded;
 
@@ -78,7 +83,11 @@ namespace CountMasterClone
             Vector3 direction = (realWorldPos - transform.position);
             direction.Scale(Vector3.right);
 
-            transform.localPosition += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime; 
+            transform.localPosition += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime;
+            float groupWidth = playerGroupManager.GroupWidth;
+            float xClamped = Mathf.Clamp(transform.localPosition.x, -(PlatformWidth - groupWidth) / 2.0f, (PlatformWidth - groupWidth) / 2.0f);
+        
+            transform.localPosition = new Vector3(xClamped, transform.localPosition.y, transform.localPosition.z);
         }
 
         private void Update()

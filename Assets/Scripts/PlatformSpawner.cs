@@ -341,6 +341,9 @@ namespace CountMasterClone
             BasePlatformInfo platformInfo = basePlatform.GetComponent<BasePlatformInfo>();
             playerGO.transform.position = platformInfo.PlayerSpawnPoint;
 
+            PlayerController controller = playerGO.GetComponent<PlayerController>();
+            controller.PlatformWidth = platformInfo.RightPoint.x - platformInfo.LeftPoint.x;
+
             PlayerGroupManager playerGroupManager = playerGO.GetComponentInChildren<PlayerGroupManager>();
             playerGroupManager.Initialize(gameCamera);
 

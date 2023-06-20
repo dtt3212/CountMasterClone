@@ -48,6 +48,9 @@ namespace CountMasterClone
         public int CloneCount => transform.childCount;
         public event System.Action Disbanded;
 
+        // Quick assumption that children always in a column of childMap.height clones
+        public float GroupWidth => (transform.childCount + childMap.GetLength(1) - 1) / childMap.GetLength(1) * (distanceBetweenSpawn + unevenDistance / 2.0f);
+
         protected virtual void OnDisbanding()
         {
         }
