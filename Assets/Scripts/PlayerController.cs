@@ -67,7 +67,7 @@ namespace CountMasterClone
 
         private void Update()
         {
-            if (!kickedUp)
+            if (!kickedUp || playerGroupController.ReachedEndgame)
             {
                 return;
             }

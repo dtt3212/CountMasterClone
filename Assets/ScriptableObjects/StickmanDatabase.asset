@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f492ff0eecbf70847be080c9d9cccd7a, type: 3}
+  m_Name: StickmanDatabase
+  m_EditorClassIdentifier: 
+  stickmans:
+  - {fileID: 11400000, guid: a785e44595fede74db8d1f7ae7d8f940, type: 2}
+  - {fileID: 11400000, guid: a373d8e0225a9f749ab679cdad588ba6, type: 2}
+  - {fileID: 11400000, guid: 68260c141dad82e409b5a4e56f85ed7f, type: 2}
+  - {fileID: 11400000, guid: 58c340def4d74bd48b75634f6fcec6f8, type: 2}
+  - {fileID: 11400000, guid: ffb138442b0953243a877781b362c56b, type: 2}
+  - {fileID: 11400000, guid: dad181c6f43eda14aa0cd5616e1c21ba, type: 2}
+  - {fileID: 11400000, guid: 36f7250961733514fa02988a45eacdff, type: 2}
+  - {fileID: 11400000, guid: dda7de56d04b255408a640d6303a8d80, type: 2}

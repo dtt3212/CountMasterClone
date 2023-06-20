@@ -13,11 +13,17 @@ namespace CountMasterClone
 
         public bool ReachedFinish => destinationType != FinishDestinationType.None;
         public FinishDestinationType FinishDestinationType => destinationType;
+        public bool ReachedEndgame { get; private set; }
 
         private void Awake()
         {
             clonableGroupManager = GetComponent<PlayerGroupManager>();
             clonableGroupManager.CountLabelEnabled = false;
+
+            clonableGroupManager.Disbanded += () =>
+            {
+                ReachedEndgame = true;
+            };
         }
 
         private void Start()
@@ -108,6 +114,16 @@ namespace CountMasterClone
 
         private void Update()
         {
+            if (ReachedEndgame)
+            {
+                return;
+            }
+
+            if (transform.childCount == 0)
+            {
+                ReachedEndgame = true;
+            }
+
             if (AggressiveMode)
             {
                 transform.localPosition += MoveDirection * attackSpeed * Time.deltaTime;

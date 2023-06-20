@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CountMasterClone
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "ScriptableObjects/StickmanDatabase")]
     public class StickmanSellData : ScriptableObject
     {
         public GameObject previewPrefab;

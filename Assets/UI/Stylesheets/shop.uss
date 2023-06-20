@@ -19,3 +19,12 @@
 
     background-image: url("/Assets/UI/Images/ic_money.svg")
 }
+
+.shop-button
+{
+    border-radius: 8%;
+    font-size: 40px;
+    min-width: 30%;
+}
+
+#ve-buttons

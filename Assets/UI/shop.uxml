@@ -15,10 +15,9 @@
         </ui:VisualElement>
         <ui:VisualElement name="ve_preview" style="flex-grow: 12; flex-shrink: 12;">
             <ui:Image name="ve_preview_image" style="flex-shrink: 11; flex-grow: 11;" />
-            <ui:Label text="Label" display-tooltip-when-elided="true" style="justify-content: center; align-items: center; -unity-text-align: middle-center;" />
         </ui:VisualElement>
-        <ui:VisualElement name="ve_buttons">
-            <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:VisualElement name="ve_buttons" style="flex-shrink: 5; flex-grow: 5; align-items: center; justify-content: center;">
+            <ui:Button text="Button" display-tooltip-when-elided="true" name="action_purchase" class="shop-button" style="justify-content: center;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -16,7 +16,7 @@ namespace CountMasterClone
         private Camera previewCamera;
 
         [SerializeField]
-        private StickmanSellData[] sellDatas;
+        private StickmanDatabase database;
 
         [SerializeField]
         private float fadeInOutDuration = 0.4f;
@@ -27,7 +27,18 @@ namespace CountMasterClone
         [SerializeField]
         private StickmanPreviewController previewController;
 
+        [SerializeField]
+        private ValuableState valuableState;
+
+        [SerializeField]
+        private float moneyReduceAnimationDuration = 0.5f;
+
+        [SerializeField]
+        private float notBuyableAnimationDuration = 0.3f;
+
         private VisualElement root;
+        private Label moneyLabel;
+        private Button purchaseBtn;
         private RenderTexture renderTexture;
         private bool isTrackingScroll = false;
 
@@ -41,8 +52,69 @@ namespace CountMasterClone
             Button backBtn = root.Q<Button>("action_back");
             backBtn.clicked += OnBackButton;
 
+            moneyLabel = root.Q<Label>("lb_money_value");
+            purchaseBtn = root.Q<Button>("action_purchase");
+
             root.style.display = DisplayStyle.None;
             root.style.opacity = 0.0f;
+
+            previewController.ViewChanged += i =>
+            {
+                if (valuableState.ownedStickmans.Contains(i))
+                {
+                    if (valuableState.activeStickman == i)
+                    {
+                        purchaseBtn.text = "Selected";
+                    }
+                    else
+                    {
+                        purchaseBtn.text = "Select";
+                    }
+                }
+                else
+                {
+                    purchaseBtn.text = $"${database.stickmans[i].cost}";
+                }
+            };
+
+            purchaseBtn.clicked += OnPurchaseClicked;
+        }
+
+        private void OnPurchaseClicked()
+        {
+            int active = previewController.CurrentStickman;
+            if (valuableState.ownedStickmans.Contains(active))
+            {
+                if (valuableState.activeStickman != active)
+                {
+                    purchaseBtn.text = "Selected";
+
+                    valuableState.activeStickman = active;
+                    valuableState.Save();
+                }
+            }
+            else
+            {
+                int cost = database.stickmans[active].cost;
+                int currentHaving = valuableState.money;
+
+                if (valuableState.Purchase(cost))
+                {
+                    valuableState.ownedStickmans.Add(active);
+                    valuableState.Save();
+
+                    purchaseBtn.text = "Select";
+
+                    DOVirtual.Int(currentHaving, valuableState.money, moneyReduceAnimationDuration, f =>
+                    {
+                        moneyLabel.text = $"{f}";
+                    });
+                }
+                else
+                {
+                    purchaseBtn.transform.DOShakePosition(notBuyableAnimationDuration, 20, 10, 90);
+                }
+            }
         }
 
         private IEnumerator SetupPreview()
@@ -60,7 +132,7 @@ namespace CountMasterClone
             previewCamera.targetTexture = renderTexture;
             previewImage.image = renderTexture;
 
-            previewController.Initialize(sellDatas);
+            previewController.Initialize(database);
 
             previewImage.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -98,16 +170,22 @@ namespace CountMasterClone
             isTrackingScroll = false;
         }
 
+        private void SetupShow()
+        {
+            moneyLabel.text = $"{valuableState.money}";
+            if (!renderTexture)
+            {
+                StartCoroutine(SetupPreview());
+            }
+        }
+
         public void Show()
         {
             root.style.display = DisplayStyle.Flex;
             root.style.DOOpacity(1.0f, fadeInOutDuration)
                 .OnComplete(() =>
                 {
-                    if (!renderTexture)
-                    {
-                        StartCoroutine(SetupPreview());
-                    }
+                    SetupShow();
                 });
         }
 

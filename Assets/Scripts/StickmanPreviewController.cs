@@ -24,7 +24,7 @@ namespace CountMasterClone
             }
         }
 
-        private StickmanSellData[] stickmans;
+        private StickmanDatabase database;
         public int CurrentStickman => currentStickman;
 
         private int currentStickman;
@@ -32,17 +32,24 @@ namespace CountMasterClone
         private float scrollInViewportUnits;
         private bool ignoreScroll = false;
 
-        public void Initialize(StickmanSellData[] datas)
+        public event System.Action<int> ViewChanged;
+
+        public void Initialize(StickmanDatabase database)
         {
             distance = previewCamera.ViewportToWorldPoint(new Vector3(1, 0, -20.0f)).x - transform.position.x;
-            stickmans = datas;
+            this.database = database;
 
-            Instantiate(stickmans[0].previewPrefab, scroller, false);
+            Instantiate(database.stickmans[0].previewPrefab, scroller, false);
         }
 
         private void Awake()
         {
             DOTween.Init();
+        }
+
+        private void Start()
+        {
+            ViewChanged?.Invoke(currentStickman);
         }
 
         private int GetNextViewableStickman()
@@ -53,7 +60,7 @@ namespace CountMasterClone
             {
                 if (ScrollInViewportUnits < 0.0f)
                 {
-                    if (viewable < stickmans.Length - 1)
+                    if (viewable < database.stickmans.Length - 1)
                     {
                         viewable++;
                     }
@@ -78,7 +85,7 @@ namespace CountMasterClone
                 {
                     for (int i = scroller.childCount; i <= viewable; i++)
                     {
-                        GameObject friend = Instantiate(stickmans[i].previewPrefab, scroller, false);
+                        GameObject friend = Instantiate(database.stickmans[i].previewPrefab, scroller, false);
                         friend.transform.localPosition = -Vector3.right * distance * i;
                     }
                 }
@@ -105,7 +112,11 @@ namespace CountMasterClone
             ignoreScroll = true;
 
             scroller.DOLocalMove(currentStickman * Vector3.right * distance, 0.2f)
-                .OnComplete(() => ignoreScroll = false);
+                .OnComplete(() => 
+                {
+                    ignoreScroll = false;
+                    ViewChanged?.Invoke(currentStickman);
+                });
         }
     }
 }
