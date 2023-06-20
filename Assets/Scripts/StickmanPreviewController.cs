@@ -47,9 +47,17 @@ namespace CountMasterClone
             DOTween.Init();
         }
 
+        public void Reset()
+        {
+            scrollInViewportUnits = 0;
+            ignoreScroll = false;
+
+            ViewChanged?.Invoke(currentStickman);
+        }
+
         private void Start()
         {
-            ViewChanged?.Invoke(currentStickman);
+            Reset();
         }
 
         private int GetNextViewableStickman()

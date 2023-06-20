@@ -127,7 +127,7 @@ namespace CountMasterClone
             previewCamera.gameObject.SetActive(true);
 
             Vector2 renderTextureSize = new Vector2(previewImage.resolvedStyle.width, previewImage.resolvedStyle.height);
-            RenderTexture renderTexture = new RenderTexture((int)renderTextureSize.x, (int)renderTextureSize.y, 32);
+            renderTexture = new RenderTexture((int)renderTextureSize.x, (int)renderTextureSize.y, 32);
 
             previewCamera.targetTexture = renderTexture;
             previewImage.image = renderTexture;
@@ -173,10 +173,12 @@ namespace CountMasterClone
         private void SetupShow()
         {
             moneyLabel.text = $"{valuableState.money}";
-            if (!renderTexture)
+            if (renderTexture == null)
             {
                 StartCoroutine(SetupPreview());
             }
+            previewController.Reset();
+            previewCamera.gameObject.SetActive(true);
         }
 
         public void Show()
