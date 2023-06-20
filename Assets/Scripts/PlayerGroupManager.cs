@@ -5,6 +5,9 @@ using UnityEngine;
 using DG.Tweening;
 using System.Linq;
 
+using Cysharp.Threading.Tasks;
+using System;
+
 namespace CountMasterClone
 {
     public class PlayerGroupManager : GroupManager
@@ -27,7 +30,16 @@ namespace CountMasterClone
         private int maxPerLayer = 10;
 
         private bool isBuilding = false;
-        private bool isSteppingOnStair = false;
+
+        public void MassacreAndReset()
+        {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            base.Clone(1);
+        }
 
         public void StartBuildingTower()
         {
@@ -40,20 +52,8 @@ namespace CountMasterClone
             StartCoroutine(BuildTower());
         }
 
-        public void StepOnStair(MultiplierStairsDestController stepManager)
+        public async UniTask<Tuple<float, bool>> StepOnStair(MultiplierStairsDestController stepManager)
         {
-            if (isSteppingOnStair)
-            {
-                return;
-            }
-
-            isSteppingOnStair = true;
-            StartCoroutine(StepOnStairCoroutine(stepManager));
-        }
-
-        private IEnumerator StepOnStairCoroutine(MultiplierStairsDestController stepManager)
-        {
-            WaitForSeconds timeStepBreak = new WaitForSeconds(timeBetweenStairStepping);
             int stairMax = Mathf.Min(stepManager.StairCount, towerLayers.Count);
 
             for (int i = 0; i < stairMax; i++)
@@ -69,7 +69,7 @@ namespace CountMasterClone
                     transform.SetParent(rester, true);
                 }
 
-                yield return timeStepBreak;
+                await UniTask.Delay((int)(timeBetweenStairStepping * 1000));
 
                 for (int layerDown = layerIndex - 1; layerDown >= 0; layerDown--)
                 {
@@ -80,9 +80,12 @@ namespace CountMasterClone
                 }
             }
 
+            bool stillGoing = false;
+
             if (stairMax < towerLayers.Count)
             {
-                yield return new WaitForSeconds(reassembleGroupAfterStairDuration);
+                stillGoing = true;
+                await UniTask.Delay((int)(reassembleGroupAfterStairDuration * 1000));
 
                 int firstLayerLeft = towerLayers.Count - stairMax - 1;
 
@@ -97,7 +100,7 @@ namespace CountMasterClone
                 RepositionClones();
             }
 
-            yield break;
+            return new Tuple<float, bool>(stepManager.GetStairMultiplier(stairMax - 1), stillGoing);
         }
 
         private IEnumerator BuildTower()

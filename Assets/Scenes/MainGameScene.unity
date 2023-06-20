@@ -219,9 +219,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 274775296399978303, guid: deee7acd62723e84ea93220f330c33e7, type: 3}
+      propertyPath: playState
+      value: 
+      objectReference: {fileID: 11400000, guid: 92e1ea77ad697d649b0354b615ea7472, type: 2}
+    - target: {fileID: 274775296399978303, guid: deee7acd62723e84ea93220f330c33e7, type: 3}
       propertyPath: flashDuration
       value: 0.8
       objectReference: {fileID: 0}
+    - target: {fileID: 274775296399978303, guid: deee7acd62723e84ea93220f330c33e7, type: 3}
+      propertyPath: valuableState
+      value: 
+      objectReference: {fileID: 11400000, guid: a13302d1b7023a249aa939a336e6343d, type: 2}
     - target: {fileID: 274775296399978303, guid: deee7acd62723e84ea93220f330c33e7, type: 3}
       propertyPath: shopController
       value: 
@@ -812,7 +820,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 131063
+    m_Bits: 393207
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1028,7 +1036,7 @@ MonoBehaviour:
   distancePerTree: 8
   spawnAreaInsideGatesPadding: 8
   enemySpawnChance: 0.6
-  level: 2
+  playState: {fileID: 11400000, guid: 92e1ea77ad697d649b0354b615ea7472, type: 2}
 --- !u!4 &1253589898
 Transform:
   m_ObjectHideFlags: 0
@@ -1229,7 +1237,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 196599
+    m_Bits: 458743
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1577,5 +1585,13 @@ PrefabInstance:
       propertyPath: normalViewCinecam
       value: 
       objectReference: {fileID: 1858650882}
+    - target: {fileID: 5856185195781441369, guid: 53a92e19877696c4b917e22bf7979b83, type: 3}
+      propertyPath: valuableState
+      value: 
+      objectReference: {fileID: 11400000, guid: a13302d1b7023a249aa939a336e6343d, type: 2}
+    - target: {fileID: 5856185195781441369, guid: 53a92e19877696c4b917e22bf7979b83, type: 3}
+      propertyPath: notificationPrefab
+      value: 
+      objectReference: {fileID: 6591616203815998187, guid: 3b2869d31b16a494494040b0ef4ef4c4, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53a92e19877696c4b917e22bf7979b83, type: 3}

@@ -1,35 +1,22 @@
 using System.Collections.Generic;
 using System.IO;
-
+using UniRx;
 using UnityEngine;
 
 namespace CountMasterClone
 {
     [CreateAssetMenu(fileName = "ValuableState", menuName = "ScriptableObjects/ValuableState")]
-    public class ValuableState : ScriptableObject
+    public class ValuableState : SerializableState
     {
         public int money = 350;
 
-        public int activeStickman;
+        public ReactiveProperty<int> activeStickman = new ReactiveProperty<int>(0);
 
         public List<int> ownedStickmans = new();
 
-        private string SavePath => Path.Join(Application.persistentDataPath, "valuableState.json");
+        public event System.Action<int> ActiveStickmanChanged;
 
-        private void Awake()
-        {
-            if (!File.Exists(SavePath))
-            {
-                return;
-            }
-
-            JsonUtility.FromJsonOverwrite(File.ReadAllText(SavePath), this);
-        }
-
-        public void Save()
-        {
-            File.WriteAllText(SavePath, JsonUtility.ToJson(this));
-        }
+        protected override string SaveName => "valuableState.json";
 
         public bool Purchase(int cost)
         {

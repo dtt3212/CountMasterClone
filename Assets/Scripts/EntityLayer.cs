@@ -10,6 +10,7 @@ namespace CountMasterClone
         EnemiesCage = 11,
         PlayerRange = 12,
         Finish = 13,
-        Stair = 14
+        Stair = 14,
+        Treasure = 18
     }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6403108303039281080}
   - component: {fileID: 6403108303039281081}
   - component: {fileID: 6403108304634571904}
+  - component: {fileID: -6927536272383785825}
   m_Layer: 14
   m_Name: stair
   m_TagString: Untagged
@@ -66,3 +67,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 15.139964, y: 7.928707, z: 3.3011398}
   m_Center: {x: 0.0012440681, y: 3.4643536, z: -0.052265167}
+--- !u!114 &-6927536272383785825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6403108303039281086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 532528eeda149eb4d931cfca63f9f7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 1

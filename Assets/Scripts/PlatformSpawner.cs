@@ -47,9 +47,11 @@ namespace CountMasterClone
         private float enemySpawnChance = 0.65f;
 
         [SerializeField]
-        private int level = 1;
+        private PlayState playState;
 
         private GameObject rootGO;
+
+        private int level => playState.level;
 
         private int TargetMaxClone
         {
@@ -311,9 +313,22 @@ namespace CountMasterClone
 
             MultiplierStairsDestController stepManager = staircase.GetComponent<MultiplierStairsDestController>();
             stepManager.Initialize(TargetMaxMultiplier);
+
+            ObjectCoinValue coinValue = staircase.GetComponent<ObjectCoinValue>();
+            coinValue.value = (level + 7) / 8 * 8;
+
+            stepManager.DestinationInfo.ChestValue = (level + 9) / 10 * 20;
         }
 
-        public void Start()
+        public void Clean()
+        {
+            Destroy(rootGO);
+
+            PlayerGroupController controller = playerGO.GetComponentInChildren<PlayerGroupController>();
+            controller.TotalReset();
+        }
+
+        public void Spawn()
         {
             rootGO = new GameObject();
             rootGO.transform.parent = null;
@@ -325,13 +340,18 @@ namespace CountMasterClone
             // Spawn decoratives
             BasePlatformInfo platformInfo = basePlatform.GetComponent<BasePlatformInfo>();
             playerGO.transform.position = platformInfo.PlayerSpawnPoint;
-            
+
             PlayerGroupManager playerGroupManager = playerGO.GetComponentInChildren<PlayerGroupManager>();
             playerGroupManager.Initialize(gameCamera);
 
             SpawnGatesAndHostiles(platformInfo);
             SpawnDestination(platformInfo);
             SpawnTreeBatches(platformInfo);
+        }
+
+        public void Start()
+        {
+            Spawn();
         }
     }
 }

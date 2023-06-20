@@ -62,7 +62,7 @@ namespace CountMasterClone
             {
                 if (valuableState.ownedStickmans.Contains(i))
                 {
-                    if (valuableState.activeStickman == i)
+                    if (valuableState.activeStickman.Value == i)
                     {
                         purchaseBtn.text = "Selected";
                     }
@@ -85,11 +85,11 @@ namespace CountMasterClone
             int active = previewController.CurrentStickman;
             if (valuableState.ownedStickmans.Contains(active))
             {
-                if (valuableState.activeStickman != active)
+                if (valuableState.activeStickman.Value != active)
                 {
                     purchaseBtn.text = "Selected";
 
-                    valuableState.activeStickman = active;
+                    valuableState.activeStickman.Value = active;
                     valuableState.Save();
                 }
             }

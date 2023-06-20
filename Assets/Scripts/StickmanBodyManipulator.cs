@@ -12,7 +12,7 @@ namespace CountMasterClone
 
         private void Start()
         {
-            GameObject body = database.stickmans[valuableState.activeStickman].previewPrefab;
+            GameObject body = database.stickmans[valuableState.activeStickman.Value].previewPrefab;
             Instantiate(body, transform, false);
         }
     }

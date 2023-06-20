@@ -13,7 +13,11 @@ namespace CountMasterClone
         [SerializeField]
         private Material[] stairMaterials;
 
+        private StairDestinationInfo destinationInfo;
+
         private int stairCount;
+
+        public StairDestinationInfo DestinationInfo => destinationInfo;
 
         public void Initialize(float maxMultiplier)
         {
@@ -47,6 +51,8 @@ namespace CountMasterClone
 
             GameObject platform = Instantiate(destinationPlatformPrefab, transform, false);
             platform.transform.position = platformPosition;
+
+            destinationInfo = platform.GetComponent<StairDestinationInfo>();
         }
 
         public int StairCount => stairCount;

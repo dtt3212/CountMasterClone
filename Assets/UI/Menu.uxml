@@ -3,7 +3,17 @@
     <Style src="project://database/Assets/UI/Stylesheets/menu.uss?fileID=7433441132597879392&amp;guid=99d9350092dcb164bbbd67b4b8ffdfb4&amp;type=3#menu" />
     <Style src="project://database/Assets/UI/Stylesheets/menu_button.uss?fileID=7433441132597879392&amp;guid=e51029130139c2540b245e91386728d0&amp;type=3#menu_button" />
     <ui:VisualElement name="ve_root" style="flex-grow: 1; background-color: rgba(84, 77, 77, 0.6);">
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; margin-left: 4%; margin-right: 4%; margin-top: 4%; margin-bottom: 0;">
+            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:VisualElement name="ve_money_bar" class="money-bar" style="flex-direction: row; align-items: center; justify-content: space-around; flex-grow: 1; margin-top: 4%; -unity-text-align: upper-left;">
+                <ui:VisualElement name="ic_money" class="money-bar-icon" style="flex-shrink: 0;" />
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="lb_money_value" class="money-bar-value" style="flex-shrink: 1; flex-grow: 1; justify-content: center; align-items: center; -unity-text-align: middle-right; font-size: 36px; padding-right: 2%; padding-left: 0; margin-left: -5px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:Label text="COUNT MASTER CLONE" display-tooltip-when-elided="true" name="lb_game_name" style="font-size: 128px; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/Fonts/MotleyForcesRegular-w1rZ3.ttf?fileID=12800000&amp;guid=5367c8c63ee2d7549bbd3c98577ea365&amp;type=3#MotleyForcesRegular-w1rZ3&apos;); -unity-text-outline-color: rgb(0, 0, 0); color: rgb(0, 0, 0); justify-content: flex-start; align-items: center; -unity-text-align: middle-center; -unity-font-style: bold; background-color: rgba(0, 0, 0, 0); white-space: normal; flex-shrink: 2; flex-grow: 2;" />
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="lb_game_info" style="flex-shrink: 1; flex-grow: 1; font-size: 60px; -unity-text-align: upper-center; -unity-font-style: bold;" />
+        </ui:VisualElement>
         <ui:Label text="Touch/click to start" display-tooltip-when-elided="true" name="lb_instruction_short" style="flex-shrink: 1; flex-grow: 1; font-size: 60px; -unity-font: url(&apos;project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&amp;guid=e3265ab4bf004d28a9537516768c1c75&amp;type=3#LiberationSans&apos;); justify-content: center; align-items: center; -unity-text-align: lower-center; -unity-font-style: bold; color: rgb(27, 27, 27);" />
         <ui:VisualElement name="ve_buttons" style="flex-shrink: 1; flex-grow: 1; padding-left: 5%; padding-right: 5%; margin-left: 0; margin-right: 0; padding-top: 5%; padding-bottom: 5%; justify-content: flex-start; flex-direction: row; align-items: flex-end; flex-wrap: nowrap;">
             <ui:Instance template="menu_button" name="action_store_container" />

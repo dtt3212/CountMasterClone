@@ -1,4 +1,7 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+
+using UniRx;
 
 namespace CountMasterClone
 {
@@ -7,13 +10,62 @@ namespace CountMasterClone
         [SerializeField]
         private float attackSpeed = 4.0f;
 
+        [SerializeField]
+        private GameObject notificationPrefab;
+
+        [SerializeField]
+        private ValuableState valuableState;
+
         private PlayerGroupManager clonableGroupManager;
 
         private FinishDestinationType destinationType = FinishDestinationType.None;
 
         public bool ReachedFinish => destinationType != FinishDestinationType.None;
         public FinishDestinationType FinishDestinationType => destinationType;
-        public bool ReachedEndgame { get; private set; }
+
+        public event System.Action GameEnded;
+
+        public void TotalReset()
+        {
+            transform.localPosition = Vector3.zero;
+            clonableGroupManager.MassacreAndReset();
+        }
+
+        private async UniTaskVoid TransitionToEndgame()
+        {
+            if (endGamed)
+            {
+                return;
+            }
+
+            endGamed = true;
+
+            valuableState.money += coinCollected;
+            valuableState.Save();
+
+            GameObject notification = Instantiate(notificationPrefab, transform.position + new Vector3(0, 8, 5), Quaternion.identity);
+            EarnedNotificationController notificationController = notification.GetComponent<EarnedNotificationController>();
+
+            notificationController.Display($"+${coinCollected}=${valuableState.money}");
+
+            await UniTask.Delay((int)(4.5f * 1000));
+            GameEnded?.Invoke();
+        }
+
+        public bool ReachedEndgame
+        {
+            get => endGamed;
+            set
+            {
+                TransitionToEndgame().Forget();
+            }
+        }
+
+        private bool stairing = false;
+        private bool treasuring = false;
+        private bool endGamed = false;
+
+        private int coinCollected;
 
         private void Awake()
         {
@@ -24,6 +76,11 @@ namespace CountMasterClone
             {
                 ReachedEndgame = true;
             };
+
+            valuableState.activeStickman.Subscribe(newActive =>
+            {
+                clonableGroupManager.MassacreAndReset();
+            });
         }
 
         private void Start()
@@ -82,7 +139,11 @@ namespace CountMasterClone
         protected override void OnTriggerEnter(Collider other)
         {
             base.OnTriggerEnter(other);
+            OnTriggerEnterAsync(other).Forget();
+        }
 
+        protected async UniTaskVoid OnTriggerEnterAsync(Collider other)
+        {
             switch ((EntityLayer)other.gameObject.layer)
             {
                 case EntityLayer.Gate:
@@ -107,7 +168,34 @@ namespace CountMasterClone
                     }
 
                 case EntityLayer.Stair:
-                    clonableGroupManager.StepOnStair(other.gameObject.GetComponent<MultiplierStairsDestController>());
+                    if (!stairing)
+                    {
+                        stairing = true;
+                        
+                        System.Tuple<float, bool> coinMultiplierAndKeepGoing = await clonableGroupManager.StepOnStair(other.gameObject.GetComponent<MultiplierStairsDestController>());
+                        float coinBase = other.GetComponent<ObjectCoinValue>().value;
+
+                        coinCollected += (int)(coinBase * coinMultiplierAndKeepGoing.Item1);
+
+                        Debug.Log("Collected " + coinCollected + " coins");
+
+                        if (!coinMultiplierAndKeepGoing.Item2)
+                        {
+                            ReachedEndgame = true;
+                        }
+                    }
+
+                    break;
+
+                case EntityLayer.Treasure:
+                    if (!treasuring)
+                    {
+                        treasuring = true;
+                        ReachedEndgame = true;
+
+                        coinCollected += other.GetComponent<ObjectCoinValue>().value;
+                    }
+
                     break;
             }
         }
@@ -117,11 +205,6 @@ namespace CountMasterClone
             if (ReachedEndgame)
             {
                 return;
-            }
-
-            if (transform.childCount == 0)
-            {
-                ReachedEndgame = true;
             }
 
             if (AggressiveMode)

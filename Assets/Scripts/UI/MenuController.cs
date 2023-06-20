@@ -30,12 +30,36 @@ namespace CountMasterClone
         [SerializeField]
         private PlayerController playerController;
 
+        [SerializeField]
+        private PlayState playState;
+
+        [SerializeField]
+        private ValuableState valuableState;
+
         private VisualElement realRoot;
 
         private void Awake()
         {
             EventSystem.SetUITookitEventSystemOverride(null, false, false);
             DOTween.Init();
+        }
+
+        private void RefreshMoney()
+        {
+            Label moneyLabel = document.rootVisualElement.Q<Label>("lb_money_value");
+            moneyLabel.text = $"${valuableState.money}";
+        }
+
+        private void RefreshPlayState()
+        {
+            Label gameInfoLabel = document.rootVisualElement.Q<Label>("lb_game_info");
+            gameInfoLabel.text = $"Level {playState.level}";
+        }
+
+        private void Refresh()
+        {
+            RefreshMoney();
+            RefreshPlayState();
         }
 
         private void Start()
@@ -63,6 +87,7 @@ namespace CountMasterClone
             });
 
             shopController.Closed += Show;
+            Refresh();
         }
 
         private void Hide(Action onHideDone)
@@ -77,6 +102,8 @@ namespace CountMasterClone
 
         private void Show()
         {
+            Refresh();
+
             realRoot.style.display = DisplayStyle.Flex;
             realRoot.style.DOOpacity(1.0f, uiFadeDuration);
         }

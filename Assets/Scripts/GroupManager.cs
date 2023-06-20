@@ -302,6 +302,8 @@ namespace CountMasterClone
 
                 groupMembersChanged = false;
             }
+
+            memberCountLabel.transform.position = new Vector3(memberCountLabel.transform.position.x, memberCountLabel.transform.position.y, transform.position.z);
         }
 
         public void Initialize(Camera gameCamera)

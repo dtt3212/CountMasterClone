@@ -31,17 +31,32 @@ namespace CountMasterClone
         [SerializeField]
         private GameObject stairViewCinecam;
 
+        public event System.Action GameEnded;
+
         private bool kickedUp = false;
+
+        public void TotalReset()
+        {
+            normalViewCinecam.SetActive(true);
+            stairViewCinecam.SetActive(false);
+
+            playerGroupController.TotalReset();
+        }
 
         private void Awake()
         {
-            normalViewCinecam.SetActive(true);
+            TotalReset();
         }
 
         public void Kickup()
-        {
+        { 
             kickedUp = true;
             playerGroupController.Kickup();
+
+            playerGroupController.GameEnded += () =>
+            {
+                GameEnded?.Invoke();
+            };
         }
 
         private void OnMove(InputValue value)
