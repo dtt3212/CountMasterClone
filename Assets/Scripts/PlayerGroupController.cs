@@ -23,11 +23,24 @@ namespace CountMasterClone
         public bool ReachedFinish => destinationType != FinishDestinationType.None;
         public FinishDestinationType FinishDestinationType => destinationType;
 
-        public event System.Action GameEnded;
+        public event System.Action<bool> GameEnded;
+
+        private bool stairing = false;
+        private bool treasuring = false;
+        private bool endGamed = false;
+        private bool losing = false;
+
+        private int coinCollected;
 
         public void TotalReset()
         {
             transform.localPosition = Vector3.zero;
+            destinationType = FinishDestinationType.None;
+            stairing = false;
+            treasuring = false;
+            endGamed = false;
+            losing = false;
+
             clonableGroupManager.MassacreAndReset();
         }
 
@@ -43,13 +56,20 @@ namespace CountMasterClone
             valuableState.money += coinCollected;
             valuableState.Save();
 
-            GameObject notification = Instantiate(notificationPrefab, transform.position + new Vector3(0, 8, 5), Quaternion.identity);
-            EarnedNotificationController notificationController = notification.GetComponent<EarnedNotificationController>();
+            if (!losing && coinCollected != 0)
+            {
+                GameObject notification = Instantiate(notificationPrefab, transform.position + new Vector3(0, 8, 5), Quaternion.identity);
+                EarnedNotificationController notificationController = notification.GetComponent<EarnedNotificationController>();
 
-            notificationController.Display($"+${coinCollected}=${valuableState.money}");
+                notificationController.Display($"+${coinCollected}=${valuableState.money}");
+                await UniTask.Delay((int)(4.5f * 1000));
+            }
+            else
+            {
+                await UniTask.Delay((int)(2.0f * 1000));
+            }
 
-            await UniTask.Delay((int)(4.5f * 1000));
-            GameEnded?.Invoke();
+            GameEnded?.Invoke(!losing);
         }
 
         public bool ReachedEndgame
@@ -61,12 +81,6 @@ namespace CountMasterClone
             }
         }
 
-        private bool stairing = false;
-        private bool treasuring = false;
-        private bool endGamed = false;
-
-        private int coinCollected;
-
         private void Awake()
         {
             clonableGroupManager = GetComponent<PlayerGroupManager>();
@@ -74,6 +88,7 @@ namespace CountMasterClone
 
             clonableGroupManager.Disbanded += () =>
             {
+                losing = true;
                 ReachedEndgame = true;
             };
 

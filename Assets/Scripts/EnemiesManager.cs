@@ -27,7 +27,7 @@ namespace CountMasterClone
 
             cageCircle.transform.DOScale(Vector3.zero, destroyDuration)
                 .SetEase(Ease.InOutBack)
-                .OnComplete(() => base.OnDisbanding());
+                .OnComplete(() => Destroy(gameObject));
         }
 
         public void Initialize(Camera gameCamera, int count)

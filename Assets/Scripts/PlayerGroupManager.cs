@@ -33,12 +33,15 @@ namespace CountMasterClone
 
         public void MassacreAndReset()
         {
+            isBuilding = false;
+            CountLabelEnabled = false;
+
             foreach (Transform child in transform)
             {
                 Destroy(child.gameObject);
             }
 
-            base.Clone(1);
+            base.Clone(1, true);
         }
 
         public void StartBuildingTower()

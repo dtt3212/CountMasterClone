@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -49,7 +50,6 @@ namespace CountMasterClone
 
         protected virtual void OnDisbanding()
         {
-            Destroy(gameObject);
         }
 
         private void OnCloneDead(GameObject unfortunateClone, HitReason reason)
@@ -86,7 +86,13 @@ namespace CountMasterClone
             memberCountLabel.Text = $"{transform.childCount}";
         }
 
-        public void Clone(int additionNumber)
+        private async UniTaskVoid DeferReposition()
+        {
+            await UniTask.NextFrame();
+            RepositionClones();
+        }
+
+        public void Clone(int additionNumber, bool deferReposition = false)
         {
             for (int i = 0; i < additionNumber; i++)
             {
@@ -96,7 +102,14 @@ namespace CountMasterClone
                 controller.Died += OnCloneDead;
             }
 
-            RepositionClones();
+            if (deferReposition)
+            {
+                DeferReposition().Forget();
+            }
+            else
+            {
+                RepositionClones();
+            }
         }
 
         private Vector3 RetriveMemberPosition(int x, int y)
@@ -322,6 +335,8 @@ namespace CountMasterClone
                     {
                         memberCountLabel.gameObject.SetActive(true);
                         memberCountLabel.transform.DOComplete();
+
+                        memberCountLabel.transform.localScale = Vector3.one * 1.5f;
                     }
                     else
                     {

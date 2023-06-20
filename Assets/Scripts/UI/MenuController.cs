@@ -100,7 +100,7 @@ namespace CountMasterClone
                 });
         }
 
-        private void Show()
+        public void Show()
         {
             Refresh();
 

@@ -324,7 +324,7 @@ namespace CountMasterClone
         {
             Destroy(rootGO);
 
-            PlayerGroupController controller = playerGO.GetComponentInChildren<PlayerGroupController>();
+            PlayerController controller = playerGO.GetComponent<PlayerController>();
             controller.TotalReset();
         }
 
@@ -347,11 +347,6 @@ namespace CountMasterClone
             SpawnGatesAndHostiles(platformInfo);
             SpawnDestination(platformInfo);
             SpawnTreeBatches(platformInfo);
-        }
-
-        public void Start()
-        {
-            Spawn();
         }
     }
 }
