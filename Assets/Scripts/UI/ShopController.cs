@@ -121,7 +121,7 @@ namespace CountMasterClone
 
                     DOVirtual.Int(currentHaving, valuableState.money, moneyReduceAnimationDuration, f =>
                     {
-                        moneyLabel.text = $"{f}";
+                        moneyLabel.text = $"${f}";
                     });
                 }
                 else
@@ -190,7 +190,7 @@ namespace CountMasterClone
 
         private void SetupShow()
         {
-            moneyLabel.text = $"{valuableState.money}";
+            moneyLabel.text = $"${valuableState.money}";
             if (renderTexture == null)
             {
                 StartCoroutine(SetupPreview());

@@ -6,10 +6,19 @@
             "id": "9dd351b6-53e7-4450-9451-e2c8961f2d6e",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "MouseMove",
                     "type": "Value",
                     "id": "e8694ba8-7688-4597-b754-6596cc6cda97",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "TouchMove",
+                    "type": "Value",
+                    "id": "13ac29a4-9073-4af8-94ca-a036f628c1dd",
+                    "expectedControlType": "Touch",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -19,11 +28,22 @@
                 {
                     "name": "",
                     "id": "4c362251-dd1d-4ff5-b472-7c5379fbee87",
-                    "path": "<Pointer>/position",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "All",
-                    "action": "Move",
+                    "action": "MouseMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f57e4bf-81a6-4cd6-82a7-d1d761c2a697",
+                    "path": "<Touchscreen>/primaryTouch",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "All",
+                    "action": "TouchMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

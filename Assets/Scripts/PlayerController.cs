@@ -1,7 +1,6 @@
-using Cinemachine;
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace CountMasterClone
 {
@@ -12,6 +11,9 @@ namespace CountMasterClone
 
         [SerializeField]
         private float horizontalMoveSpeedPerSec = 10.0f;
+
+        [SerializeField]
+        private float touchHorizontalMoveFactor = 2.0f;
 
         [SerializeField]
         private float attackSpeed = 20.0f;
@@ -33,6 +35,9 @@ namespace CountMasterClone
 
         [SerializeField]
         private GameObject stairViewCinecam;
+
+        private Vector3 lastTouchPosition;
+        private float touchTimestamp;
 
         public float PlatformWidth { get; set; }
 
@@ -65,7 +70,59 @@ namespace CountMasterClone
             };
         }
 
-        private void OnMove(InputValue value)
+        private void OnTouchMove(InputValue value)
+        {
+            if (!kickedUp)
+            {
+                return;
+            }
+
+            if (playerGroupController.AggressiveMode || playerGroupController.ReachedFinish)
+            {
+                return;
+            }
+
+            TouchState touchValue = value.Get<TouchState>();
+
+            if (touchValue.phase == UnityEngine.InputSystem.TouchPhase.Ended || touchValue.phase == UnityEngine.InputSystem.TouchPhase.Canceled)
+            {
+                touchTimestamp = 0;
+                return;
+            }
+
+            Vector2 pos = touchValue.position;
+            Vector3 realWorldPos = gameCamera.ScreenToWorldPoint(new Vector3(pos.x, pos.y, cameraDistance));
+
+            float current = Time.time;
+
+            if (touchTimestamp == 0)
+            {
+                touchTimestamp = current;
+                lastTouchPosition = realWorldPos;
+
+                return;
+            }
+
+            Vector3 direction = (realWorldPos - lastTouchPosition);
+            direction.Scale(Vector3.right * touchHorizontalMoveFactor);
+
+            lastTouchPosition = realWorldPos;
+            touchTimestamp = current;
+
+            if (Mathf.Abs(direction.magnitude) <= 0.2f)
+            {
+                return;
+            }
+
+            transform.localPosition += direction;
+
+            float groupWidth = playerGroupManager.GroupWidth;
+            float xClamped = Mathf.Clamp(transform.localPosition.x, -(PlatformWidth - groupWidth) / 2.0f, (PlatformWidth - groupWidth) / 2.0f);
+
+            transform.localPosition = new Vector3(xClamped, transform.localPosition.y, transform.localPosition.z);
+        }
+
+        private void OnMouseMove(InputValue value)
         {
             if (!kickedUp)
             {
@@ -87,8 +144,6 @@ namespace CountMasterClone
             {
                 return;
             }
-
-            Debug.Log($"{pos} {direction}");
 
             transform.localPosition += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime;
             float groupWidth = playerGroupManager.GroupWidth;

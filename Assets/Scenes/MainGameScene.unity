@@ -1204,7 +1204,7 @@ MonoBehaviour:
   finishLinePrefab: {fileID: 9025796496681525357, guid: d4c911a2990113c48a3aded152f105b8, type: 3}
   stairPrefab: {fileID: 6403108303039281086, guid: 173b5a55f2c48734686009c9ce12a9e3, type: 3}
   gameCamera: {fileID: 963194227}
-  treeSpawnDensity: 0.309
+  treeSpawnDensity: 0.5
   distancePerTree: 8
   spawnAreaInsideGatesPadding: 8
   enemySpawnChance: 0.6
@@ -1778,7 +1778,11 @@ PrefabInstance:
       objectReference: {fileID: 1557500775}
     - target: {fileID: 5856185195217189124, guid: 53a92e19877696c4b917e22bf7979b83, type: 3}
       propertyPath: horizontalMoveSpeedPerSec
-      value: 30
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5856185195217189124, guid: 53a92e19877696c4b917e22bf7979b83, type: 3}
+      propertyPath: touchHorizontalMoveFactor
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53a92e19877696c4b917e22bf7979b83, type: 3}

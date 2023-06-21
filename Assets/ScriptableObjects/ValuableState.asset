@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81cd3f507ab3309408dda4a9849b20e8, type: 3}
   m_Name: ValuableState
   m_EditorClassIdentifier: 
-  money: 350
-  activeStickman: 0
+  money: 300
+  activeStickman:
+    value: 0
   ownedStickmans: 00000000

@@ -64,7 +64,7 @@ namespace CountMasterClone
         {
             int viewable = currentStickman;
 
-            if (Mathf.Abs(ScrollInViewportUnits) >= 0.15f)
+            if (Mathf.Abs(ScrollInViewportUnits) >= 0.08f)
             {
                 if (ScrollInViewportUnits < 0.0f)
                 {

@@ -34,7 +34,14 @@ namespace CountMasterClone
 
         private void Start()
         {
-            Application.targetFrameRate = 60;
+            if (Application.isMobilePlatform)
+            {
+                Application.targetFrameRate = 60;
+            }
+            else
+            {
+                QualitySettings.vSyncCount = 1;
+            }
 
             playerController.GameEnded += (win) =>
             {

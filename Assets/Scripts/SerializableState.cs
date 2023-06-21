@@ -23,6 +23,11 @@ namespace CountMasterClone
         public void Save()
         {
             File.WriteAllText(SavePath, JsonUtility.ToJson(this));
+
+#if UNITY_WEBGL
+            // Fast solution for WebGL flushing
+            Application.ExternalEval("_JS_FileSystem_Sync();");
+#endif
         }
     }
 }
