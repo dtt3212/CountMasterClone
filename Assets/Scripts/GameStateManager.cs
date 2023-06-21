@@ -34,6 +34,8 @@ namespace CountMasterClone
 
         private void Start()
         {
+            Application.targetFrameRate = 60;
+
             playerController.GameEnded += (win) =>
             {
                 if (win)

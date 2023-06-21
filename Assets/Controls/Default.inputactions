@@ -22,7 +22,7 @@
                     "path": "<Pointer>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Mouse",
+                    "groups": "All",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -32,11 +32,16 @@
     ],
     "controlSchemes": [
         {
-            "name": "Mouse",
-            "bindingGroup": "Mouse",
+            "name": "All",
+            "bindingGroup": "All",
             "devices": [
                 {
                     "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Touchscreen>",
                     "isOptional": false,
                     "isOR": false
                 }

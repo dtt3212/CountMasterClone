@@ -49,7 +49,7 @@ namespace CountMasterClone
             kickedUp = false;
         }
 
-        private void Awake()
+        private void Start()
         {
             TotalReset();
         }
@@ -82,6 +82,13 @@ namespace CountMasterClone
 
             Vector3 direction = (realWorldPos - transform.position);
             direction.Scale(Vector3.right);
+
+            if (Mathf.Abs(direction.magnitude) <= 0.2f)
+            {
+                return;
+            }
+
+            Debug.Log($"{pos} {direction}");
 
             transform.localPosition += direction.normalized * horizontalMoveSpeedPerSec * Time.deltaTime;
             float groupWidth = playerGroupManager.GroupWidth;
